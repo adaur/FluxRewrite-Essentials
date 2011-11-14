@@ -1,0 +1,10 @@
+RewriteEngine on 
+RewriteRule ^forum-([0-9]+.*)-page-([0-9]+).html$ viewforum.php?id=$1&p=$2 [L] 
+RewriteRule ^forum-([0-9]+)(.*).html$ viewforum.php?id=$1 [L] 
+RewriteRule ^topic-([0-9]+.*)-page-([0-9]*).html$ viewtopic.php?id=$1&p=$2 [L]
+RewriteRule ^topic-([0-9]+)(.*)-new-messages.html viewtopic.php?id=$1&action=new [L] 
+RewriteRule ^topic-([0-9]+)(.*)-last-message.html viewtopic.php?id=$1&action=last [L] 
+RewriteRule ^topic-([0-9]+.*).html$ viewtopic.php?id=$1 [L] 
+RewriteRule ^topic-([0-9]+.*).html#p([0-9]+)$ viewtopic.php?pid=$2 [L] 
+RewriteRule ^message-([0-9]+).html$ viewtopic.php?pid=$1 [L] 
+RewriteRule ^(.*).rss$ extern.php?action=$1&type=rss [L] 
