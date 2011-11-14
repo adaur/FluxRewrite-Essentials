@@ -1,15 +1,55 @@
 <?php
 
-/**
- * Copyright (C) 2008-2011 FluxBB
- * based on code by Rickard Andersson copyright (C) 2002-2008 PunBB
- * License: http://www.gnu.org/licenses/gpl.html GPL version 2 or higher
+/*
  * FluxRewrite by adaur
+ * URL Rewriting to FluxBB 1.4 :-)
  */
+ 
+function makeurl($type, $id, $name, $new_message = false, $post = false, $first_page = false) {    
+    
+	/*
+	   Rewrites the URL
+	   $type: forum/topic
+	   $id: ID
+	   $name: forum name/topic subject
+	   $new_message: adds -new-message to the URL or not
+	   $post: post to show up
+	   $first_page: adds -page-1 to the URL or not (avoid same content)
+	*/
+	
+    // Gentle replace of special chars
+	$a = 'ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ@()/[]|\'&';
+    $b = 'AAAAAAaaaaaaOOOOOOooooooEEEEeeeeCcIIIIiiiiUUUUuuuuyNn---------';
+    $url = utf8_encode(strtr(utf8_decode($name), utf8_decode($a), utf8_decode($b)));
+    $url = preg_replace('/ /', '-', $url);
+    // Replace non alpha-num chars by - and trim possible last dashes    
+    $url=trim(preg_replace('/[^a-z|A-Z|0-9|-]/', '', strtolower($url)), '-');
+    // Remove multiple occurences of -
+    $url=preg_replace('/\-+/', '-', $url);
+	if ($new_message === true)
+		$url = $url .'-new-messages';
+	if ($first_page === true)
+		$url = $url .'-page-1';
+	$url = urlencode($type . $id .'-'. $url .'.html');
+	if ($post != null)
+		$url = $url.'#p'.$post;
+	
+    return $url;
+}
 
-//
-// Generate a string with numbered links (for multipage scripts)
-//
+function makeurlname($name) {  
+    
+	$a = 'ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ@()/[]|\'&';
+    $b = 'AAAAAAaaaaaaOOOOOOooooooEEEEeeeeCcIIIIiiiiUUUUuuuuyNn---------';
+    $url = utf8_encode(strtr(utf8_decode($name), utf8_decode($a), utf8_decode($b)));
+    $url = preg_replace('/ /', '-', $url);  
+    $url = trim(preg_replace('/[^a-z|A-Z|0-9|-]/', '', strtolower($url)), '-');
+    $url = preg_replace('/\-+/', '-', $url);
+    $url = urlencode($url);
+
+    return $url;
+}
+
 function paginate_rewrited($num_pages, $cur_page, $link)
 {
 	global $lang_common;
@@ -65,44 +105,4 @@ function paginate_rewrited($num_pages, $cur_page, $link)
 	}
 
 	return implode(' ', $pages);
-}
-
-// Let's rewrite !
-// Type must be "forum" for forum, "topic" for topic or "message" for post
-// ID is the id of the content wanted
-// Name is the title of the category or topic  
-
-function makeurl($type, $id, $name, $new = null, $post = null) {    
-    
-    //gentle replace of special chars;
-	$a = 'ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ@()/[]|\'&';
-    $b = 'AAAAAAaaaaaaOOOOOOooooooEEEEeeeeCcIIIIiiiiUUUUuuuuyNn---------';
-    $url = utf8_encode(strtr(utf8_decode($name), utf8_decode($a), utf8_decode($b)));
-    $url = preg_replace('/ /', '-', $url);
-    //replace non alpha-num chars by - and trim possible last dashes    
-    $url=trim(preg_replace('/[^a-z|A-Z|0-9|-]/', '', strtolower($url)), '-');
-    //remove multiple occurences of -
-    $url=preg_replace('/\-+/', '-', $url);
-	if ($new != null)
-		$url = $url .'-new-messages';
-	$url = urlencode($type . $id .'-'. $url .'.html');
-	if ($post != null)
-		$url = $url.'#p'.$post;
-    return $url;
-}
-
-function makeurlname($name) {  
-    
-    //gentle replace of special chars
-	$a = 'ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ@()/[]|\'&';
-    $b = 'AAAAAAaaaaaaOOOOOOooooooEEEEeeeeCcIIIIiiiiUUUUuuuuyNn---------';
-    $url = utf8_encode(strtr(utf8_decode($name), utf8_decode($a), utf8_decode($b)));
-    $url = preg_replace('/ /', '-', $url);
-    //replace non alpha-num chars by - and trim possible last dashes    
-    $url = trim(preg_replace('/[^a-z|A-Z|0-9|-]/', '', strtolower($url)), '-');
-    //remove multiple occurences of -
-    $url = preg_replace('/\-+/', '-', $url);
-    $url = urlencode($url);
-
-    return $url;
 }
