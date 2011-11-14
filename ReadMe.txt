@@ -52,6 +52,7 @@ require PUN_ROOT.'include/functions.php';
 #---------[ 4. ADD AFTER ]------------------------------------------------
 #
 
+// Load FluxRewrite Essentials
 require PUN_ROOT.'include/fluxrewrite.php';
 
 #
@@ -145,19 +146,26 @@ $forum_field = '<h3><a href="viewforum.php?id='.$cur_forum['fid'].'">'.pun_htmls
 #---------[ 10. REPLACE BY ]-------------------------------------------------
 #
 
-$forum_field = '<h3><a href="'.makeurl("forum-", $cur_forum['fid'], $cur_forum['forum_name']).'">'.pun_htmlspecialchars($cur_forum['forum_name']).'</a>'.(!empty($forum_field_new) ? ' '.$forum_field_new : '').'</h3>';
+$forum_field = '<h3><a href="'.makeurl("forum-", $cur_forum['fid'], $cur_forum['forum_name'], false, false, true).'">'.pun_htmlspecialchars($cur_forum['forum_name']).'</a>'.(!empty($forum_field_new) ? ' '.$forum_field_new : '').'</h3>';
 
 #
 #---------[ 11. FIND ]---------------------------------------------
 #
 
+	if ($cur_forum['last_post'] != '')
 		$last_post = '<a href="viewtopic.php?pid='.$cur_forum['last_post_id'].'#p'.$cur_forum['last_post_id'].'">'.format_time($cur_forum['last_post']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_forum['last_poster']).'</span>';
 
 #
 #---------[ 12. REPLACE BY ]-------------------------------------------------
 #
 
-		$last_post = '<a href="'.makeurl("topic-", $cur_forum['last_topic_id'], $cur_forum['last_topic'], $new = null, $post = $cur_forum['last_post_id']).'">'.format_time($cur_forum['last_post']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_forum['last_poster']).'</span>';
+	if ($cur_forum['last_post'] != '')
+	{
+		$num_pages_topic = ceil(($cur_forum['num_replies'] + 1) / $pun_user['disp_posts']);
+		$last_post = '<a href="'.makeurl("topic-", $cur_forum['last_topic_id'], $cur_forum['last_topic'], false, $cur_forum['last_post_id'], false).'">'.format_time($cur_forum['last_post']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_forum['last_poster']).'</span>';
+	}
+	
+	// TODO: make an install script for last_topic + ID
 
 
 #
@@ -576,7 +584,7 @@ $mail_message = str_replace('<post_url>', get_base_url().'/viewtopic.php?pid='.$
 #---------[ 65. REPLACE BY ]-------------------------------------------------
 #
 
-$mail_message = str_replace('<post_url>', get_base_url().makeurl("topic-", $tid, $cur_posting['subject'], $new = null, $post = $new_pid), $mail_message);
+$mail_message = str_replace('<post_url>', get_base_url().'/'.makeurl("topic-", $tid, $cur_posting['subject'], $new = null, $post = $new_pid), $mail_message);
 
 #
 #---------[ 66. FIND ]---------------------------------------------
@@ -588,7 +596,7 @@ $mail_message_full = str_replace('<post_url>', get_base_url().'/viewtopic.php?pi
 #---------[ 67. REPLACE BY ]-------------------------------------------------
 #
 
-$mail_message_full = str_replace('<post_url>', get_base_url().makeurl("topic-", $tid, $cur_posting['subject'], $new = null, $post = $new_pid), $mail_message_full);
+$mail_message_full = str_replace('<post_url>', get_base_url().'/'.makeurl("topic-", $tid, $cur_posting['subject'], $new = null, $post = $new_pid), $mail_message_full);
 
 #
 #---------[ 68. FIND ]---------------------------------------------
@@ -600,7 +608,7 @@ $mail_message = str_replace('<topic_url>', get_base_url().'/viewtopic.php?id='.$
 #---------[ 69. REPLACE BY ]-------------------------------------------------
 #
 
-$mail_message = str_replace('<topic_url>', get_base_url().makeurl("topic-", $new_tid, $pun_config['o_censoring'] == '1' ? $censored_subject : $subject), $mail_message);
+$mail_message = str_replace('<topic_url>', get_base_url().'/'.makeurl("topic-", $new_tid, $pun_config['o_censoring'] == '1' ? $censored_subject : $subject), $mail_message);
 
 
 #
@@ -613,7 +621,7 @@ $mail_message_full = str_replace('<topic_url>', get_base_url().'/viewtopic.php?i
 #---------[ 69. REPLACE BY ]-------------------------------------------------
 #
 
-$mail_message_full = str_replace('<topic_url>', get_base_url().makeurl("topic-", $new_tid, $pun_config['o_censoring'] == '1' ? $censored_subject : $subject), $mail_message_full);
+$mail_message_full = str_replace('<topic_url>', get_base_url().'/'.makeurl("topic-", $new_tid, $pun_config['o_censoring'] == '1' ? $censored_subject : $subject), $mail_message_full);
 
 
 
