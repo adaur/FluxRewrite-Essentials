@@ -131,6 +131,60 @@ function confirm_referrer($script, $error_msg = false)
 }
 
 #
+#---------[ 2. FIND ]----------------------------------------------------
+#
+
+//
+// Update posts, topics, last_post, last_post_id and last_poster for a forum
+//
+function update_forum($forum_id)
+{
+	global $db;
+
+	$result = $db->query('SELECT COUNT(id), SUM(num_replies) FROM '.$db->prefix.'topics WHERE forum_id='.$forum_id) or error('Unable to fetch forum topic count', __FILE__, __LINE__, $db->error());
+	list($num_topics, $num_posts) = $db->fetch_row($result);
+
+	$num_posts = $num_posts + $num_topics; // $num_posts is only the sum of all replies (we have to add the topic posts)
+
+	$result = $db->query('SELECT last_post, last_post_id, last_poster FROM '.$db->prefix.'topics WHERE forum_id='.$forum_id.' AND moved_to IS NULL ORDER BY last_post DESC LIMIT 1') or error('Unable to fetch last_post/last_post_id/last_poster', __FILE__, __LINE__, $db->error());
+	if ($db->num_rows($result)) // There are topics in the forum
+	{
+		list($last_post, $last_post_id, $last_poster) = $db->fetch_row($result);
+
+		$db->query('UPDATE '.$db->prefix.'forums SET num_topics='.$num_topics.', num_posts='.$num_posts.', last_post='.$last_post.', last_post_id='.$last_post_id.', last_poster=\''.$db->escape($last_poster).'\' WHERE id='.$forum_id) or error('Unable to update last_post/last_post_id/last_poster', __FILE__, __LINE__, $db->error());
+	}
+	else // There are no topics
+		$db->query('UPDATE '.$db->prefix.'forums SET num_topics='.$num_topics.', num_posts='.$num_posts.', last_post=NULL, last_post_id=NULL, last_poster=NULL WHERE id='.$forum_id) or error('Unable to update last_post/last_post_id/last_poster', __FILE__, __LINE__, $db->error());
+}
+
+#
+#---------[ 4. REPLACE WITH ]------------------------------------------------
+#
+
+//
+// Update posts, topics, last_post, last_post_id and last_poster for a forum
+//
+function update_forum($forum_id)
+{
+	global $db;
+
+	$result = $db->query('SELECT COUNT(id), SUM(num_replies) FROM '.$db->prefix.'topics WHERE forum_id='.$forum_id) or error('Unable to fetch forum topic count', __FILE__, __LINE__, $db->error());
+	list($num_topics, $num_posts) = $db->fetch_row($result);
+
+	$num_posts = $num_posts + $num_topics; // $num_posts is only the sum of all replies (we have to add the topic posts)
+
+	$result = $db->query('SELECT last_post, last_post_id, last_poster, subject, id, num_replies FROM '.$db->prefix.'topics WHERE forum_id='.$forum_id.' AND moved_to IS NULL ORDER BY last_post DESC LIMIT 1') or error('Unable to fetch last_post/last_post_id/last_poster', __FILE__, __LINE__, $db->error());
+	if ($db->num_rows($result)) // There are topics in the forum
+	{
+		list($last_post, $last_post_id, $last_poster, $last_topic, $last_topic_id, $num_replies) = $db->fetch_row($result);
+
+		$db->query('UPDATE '.$db->prefix.'forums SET num_topics='.$num_topics.', num_posts='.$num_posts.', num_replies='.$num_replies.', last_post='.$last_post.', last_post_id='.$last_post_id.', last_poster=\''.$db->escape($last_poster).'\', last_topic=\''.$db->escape($last_topic).'\', last_topic_id='.$last_topic_id.' WHERE id='.$forum_id) or error('Unable to update last_post/last_post_id/last_poster', __FILE__, __LINE__, $db->error());
+	}
+	else // There are no topics
+		$db->query('UPDATE '.$db->prefix.'forums SET num_topics='.$num_topics.', num_posts='.$num_posts.', last_post=NULL, last_post_id=NULL, last_poster=NULL, last_topic=NULL, last_topic_id=NULL, num_replies=NULL WHERE id='.$forum_id) or error('Unable to update last_post/last_post_id/last_poster/last_topic', __FILE__, __LINE__, $db->error());
+}
+
+#
 #---------[ 8. OPEN ]---------------------------------------------------------
 #
 
@@ -146,8 +200,20 @@ $forum_field = '<h3><a href="viewforum.php?id='.$cur_forum['fid'].'">'.pun_htmls
 #---------[ 10. REPLACE BY ]-------------------------------------------------
 #
 
-$forum_field = '<h3><a href="'.makeurl("forum-", $cur_forum['fid'], $cur_forum['forum_name'], false, false, true).'">'.pun_htmlspecialchars($cur_forum['forum_name']).'</a>'.(!empty($forum_field_new) ? ' '.$forum_field_new : '').'</h3>';
+$forum_field = '<h3><a href="'.makeurl("forum-", $cur_forum['fid'], $cur_forum['forum_name'], 1, false, false).'">'.pun_htmlspecialchars($cur_forum['forum_name']).'</a>'.(!empty($forum_field_new) ? ' '.$forum_field_new : '').'</h3>';
 
+#
+#---------[ 11. FIND ]---------------------------------------------
+#
+
+f.last_poster
+
+#
+#---------[ 12. ADD AFTER ]-------------------------------------------------
+#
+
+, f.last_topic, f.last_topic_id, f.num_replies
+	
 #
 #---------[ 11. FIND ]---------------------------------------------
 #
@@ -162,10 +228,8 @@ $forum_field = '<h3><a href="'.makeurl("forum-", $cur_forum['fid'], $cur_forum['
 	if ($cur_forum['last_post'] != '')
 	{
 		$num_pages_topic = ceil(($cur_forum['num_replies'] + 1) / $pun_user['disp_posts']);
-		$last_post = '<a href="'.makeurl("topic-", $cur_forum['last_topic_id'], $cur_forum['last_topic'], false, $cur_forum['last_post_id'], false).'">'.format_time($cur_forum['last_post']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_forum['last_poster']).'</span>';
+		$last_post = '<a href="'.makeurl("topic-", $cur_forum['last_topic_id'], $cur_forum['last_topic'], $num_pages_topic, false, $cur_forum['last_post_id']).'">'.format_time($cur_forum['last_post']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_forum['last_poster']).'</span>';
 	}
-	
-	// TODO: make an install script for last_topic + ID
 
 
 #
@@ -264,7 +328,7 @@ $paging_links = '<span class="pages-label">'.$lang_common['Pages'].' </span>'.pa
 #
 
 // Generate paging links 
-$paging_links = '<span class="pages-label">'.$lang_common['Pages'].' </span>'.paginate_rewrited($num_pages, $p, 'forum-'.$id.'-'.makeurlname($cur_forum['forum_name']));
+$paging_links = '<span class="pages-label">'.$lang_common['Pages'].' </span>'.paginate_rewrited($num_pages, $p, 'forum-'.$id.'-'.clean_url($cur_forum['forum_name']));
 
 #
 #---------[ 26. FIND ]---------------------------------------------
@@ -276,7 +340,7 @@ $subject_multipage = '<span class="pagestext">[ '.paginate($num_pages_topic, -1,
 #---------[ 27. REPLACE BY ]-------------------------------------------------
 #
 
-$subject_multipage = '<span class="pagestext">[ '.paginate_rewrited($num_pages_topic, -1, 'topic-'.$cur_topic['id'].'-'.makeurlname($cur_topic['subject'])).' ]</span>';
+$subject_multipage = '<span class="pagestext">[ '.paginate_rewrited($num_pages_topic, -1, 'topic-'.$cur_topic['id'].'-'.clean_url($cur_topic['subject'])).' ]</span>';
 
 #
 #---------[ 26. FIND ]---------------------------------------------
@@ -347,7 +411,7 @@ $paging_links = '<span class="pages-label">'.$lang_common['Pages'].' </span>'.pa
 #
 
 // Generate paging links
-$paging_links = '<span class="pages-label">'.$lang_common['Pages'].': </span>'.paginate_rewrited($num_pages, $p, 'topic-'.$id.'-'.makeurlname($cur_topic['subject']));
+$paging_links = '<span class="pages-label">'.$lang_common['Pages'].': </span>'.paginate_rewrited($num_pages, $p, 'topic-'.$id.'-'.clean_url($cur_topic['subject']));
 
 #
 #---------[ 36. FIND ]---------------------------------------------
@@ -520,7 +584,7 @@ $num_pages_topic = ceil(($cur_search['num_replies'] + 1) / $pun_user['disp_posts
 #
 
 				if ($num_pages_topic > 1)
-					$subject_multipage = '<span class="pagestext">[ '.paginate_rewrited($num_pages_topic, -1, 'topic-'.$cur_search['tid'].'-'.makeurlname($cur_search['subject'])).' ]</span>';
+					$subject_multipage = '<span class="pagestext">[ '.paginate_rewrited($num_pages_topic, -1, 'topic-'.$cur_search['tid'].'-'.clean_url($cur_search['subject'])).' ]</span>';
 				else
 					$subject_multipage = null;
 				
