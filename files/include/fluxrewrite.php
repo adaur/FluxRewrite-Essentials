@@ -38,11 +38,10 @@ function makeurl($type, $id, $name, $page, $new_message = false, $post = false) 
 	*/
 	
     $url = clean_url($name);
-	$url = $url.'-page-'.$page;
 	if ($new_message === true)
 		$url = $url.'-new-messages';
-	if ($first_page === true)
-		$url = $url.'-page-1';
+	else
+		$url = $url.'-page-'.$page;
 	$url = urlencode($type . $id .'-'. $url .'.html');
 	if ($post != null)
 		$url = $url.'#p'.$post;
