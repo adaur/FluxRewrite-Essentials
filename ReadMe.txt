@@ -266,55 +266,51 @@ $icon_type = 'icon';
 #---------[ 14. FIND ]---------------------------------------------
 #
 
-		if ($cur_topic['moved_to'] == null)
-			$last_post = '<a href="viewtopic.php?pid='.$cur_topic['last_post_id'].'#p'.$cur_topic['last_post_id'].'">'.format_time($cur_topic['last_post']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['last_poster']).'</span>';
-		else
-			$last_post = '- - -';
+		$last_post = '<a href="viewtopic.php?pid='.$cur_topic['last_post_id'].'#p'.$cur_topic['last_post_id'].'">'.format_time($cur_topic['last_post']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['last_poster']).'</span>';
 
 #
 #---------[ 15. REPLACE BY ]-------------------------------------------------
 #
 
-		if ($cur_topic['moved_to'] == null)
-			$last_post = '<a href="'.makeurl("topic-", $cur_topic['id'], $cur_topic['subject'].'-page-'.$num_pages_topic, $new = null, $post = $cur_topic['last_post_id']).'">'.format_time($cur_topic['last_post']).'</a><br /><span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['last_poster']).'</span>';
-		else
-			$last_post = '- - -';
+		$last_post = '<a href="'.makeurl("topic-", $cur_topic['id'], $cur_topic['subject'], $num_pages_topic, false, $cur_topic['last_post_id']).'">'.format_time($cur_topic['last_post']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['last_poster']).'</span>';
 
 #
 #---------[ 16. FIND ]---------------------------------------------
 #
 
-$subject = '<a href="viewtopic.php?id='.$cur_topic['moved_to'].'">'.pun_htmlspecialchars($cur_topic['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['poster']).'</span>';
+		if ($cur_topic['moved_to'] != 0)
+		{
+			$subject = '<a href="viewtopic.php?id='.$cur_topic['moved_to'].'">'.pun_htmlspecialchars($cur_topic['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['poster']).'</span>';
+			$status_text[] = '<span class="movedtext">'.$lang_forum['Moved'].'</span>';
+			$item_status .= ' imoved';
+		}
+		else if ($cur_topic['closed'] == '0')
+			$subject = '<a href="viewtopic.php?id='.$cur_topic['id'].'">'.pun_htmlspecialchars($cur_topic['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['poster']).'</span>';
+		else
+		{
+			$subject = '<a href="viewtopic.php?id='.$cur_topic['id'].'">'.pun_htmlspecialchars($cur_topic['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['poster']).'</span>';
+			$status_text[] = '<span class="closedtext">'.$lang_forum['Closed'].'</span>';
+			$item_status .= ' iclosed';
+		}
 
 #
 #---------[ 17. REPLACE BY ]-------------------------------------------------
 #
 
-$subject = '<a href="'.makeurl("topic-", $cur_topic['moved_to'], $cur_topic['subject']).'">'.pun_htmlspecialchars($cur_topic['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['poster']).'</span>';
-
-#
-#---------[ 18. FIND ]---------------------------------------------
-#
-
-$subject = '<a href="viewtopic.php?id='.$cur_topic['id'].'">'.pun_htmlspecialchars($cur_topic['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['poster']).'</span>';
-
-#
-#---------[ 19. REPLACE BY ]-------------------------------------------------
-#
-
-$subject = '<a href="'.makeurl("topic-", $cur_topic['id'], $cur_topic['subject']).'">'.pun_htmlspecialchars($cur_topic['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['poster']).'</span>';
-
-#
-#---------[ 20. FIND ]---------------------------------------------
-#
-
-$subject = '<a href="viewtopic.php?id='.$cur_topic['id'].'">'.pun_htmlspecialchars($cur_topic['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['poster']).'</span>';
-
-#
-#---------[ 21. REPLACE BY ]-------------------------------------------------
-#
-
-$subject = '<a href="'.makeurl("topic-", $cur_topic['id'], $cur_topic['subject']).'">'.pun_htmlspecialchars($cur_topic['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['poster']).'</span>';
+		if ($cur_topic['moved_to'] != 0)
+		{
+			$subject = '<a href="'.makeurl("topic-", $cur_topic['moved_to'], $cur_topic['subject'], 1, false, false).'">'.pun_htmlspecialchars($cur_topic['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['poster']).'</span>';
+			$status_text[] = '<span class="movedtext">'.$lang_forum['Moved'].'</span>';
+			$item_status .= ' imoved';
+		}
+		else if ($cur_topic['closed'] == '0')
+			$subject = '<a href="'.makeurl("topic-", $cur_topic['id'], $cur_topic['subject'], 1, false, false).'">'.pun_htmlspecialchars($cur_topic['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['poster']).'</span>';
+		else
+		{
+			$subject = '<a href="'.makeurl("topic-", $cur_topic['id'], $cur_topic['subject'], 1, false, false).'">'.pun_htmlspecialchars($cur_topic['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['poster']).'</span>';
+			$status_text[] = '<span class="closedtext">'.$lang_forum['Closed'].'</span>';
+			$item_status .= ' iclosed';
+		}
 
 #
 #---------[ 22. FIND ]---------------------------------------------
@@ -326,7 +322,7 @@ $subject_new_posts = '<span class="newtext">[ <a href="viewtopic.php?id='.$cur_t
 #---------[ 23. REPLACE BY ]-------------------------------------------------
 #
 
-$subject_new_posts = '<span class="newtext">[ <a href="'.makeurlnew("topic-", $cur_topic['id'], $cur_topic['subject']).'" title="'.$lang_common['New posts info'].'">'.$lang_common['New posts'].'</a> ]</span>';
+$subject_new_posts = '<span class="newtext">[ <a href="'.makeurl("topic-", $cur_topic['id'], $cur_topic['subject'], null, true, false).'" title="'.$lang_common['New posts info'].'">'.$lang_common['New posts'].'</a> ]</span>';
 
 #
 #---------[ 24. FIND ]---------------------------------------------
@@ -361,22 +357,10 @@ $subject_multipage = '<span class="pagestext">[ '.paginate_rewrited($num_pages_t
 <li><span>»&#160;</span><a href="viewforum.php?id=<?php echo $id ?>"><strong><?php echo pun_htmlspecialchars($cur_forum['forum_name']) ?></strong></a></li>
 
 #
-#---------[ 27. REPLACE BY ]-------------------------------------------------
+#---------[ 27. REPLACE BY  (2 TIMES) ]-------------------------------------------------
 #
 
-<li><span>»&#160;</span><a href="<?php echo makeurl("forum-", $id, $cur_forum['forum_name']) ?>"><strong><?php echo pun_htmlspecialchars($cur_forum['forum_name']) ?></strong></a></li>
-
-#
-#---------[ 26. FIND ]---------------------------------------------
-#
-
-<li><span>»&#160;</span><a href="viewforum.php?id=<?php echo $id ?>"><strong><?php echo pun_htmlspecialchars($cur_forum['forum_name']) ?></strong></a></li>
-
-#
-#---------[ 27. REPLACE BY ]-------------------------------------------------
-#
-
-<li><span>»&#160;</span><a href="<?php echo makeurl("forum-", $id, $cur_forum['forum_name']) ?>"><strong><?php echo pun_htmlspecialchars($cur_forum['forum_name']) ?></strong></a></li>
+<li><span>»&#160;</span><a href="<?php echo makeurl("forum-", $id, $cur_forum['forum_name'], 1, false, false) ?>"><strong><?php echo pun_htmlspecialchars($cur_forum['forum_name']) ?></strong></a></li>
 
 
 #
@@ -392,24 +376,11 @@ viewtopic.php
 		<li><span>»&#160;</span><a href="viewtopic.php?id=<?php echo $id ?>"><strong><?php echo pun_htmlspecialchars($cur_topic['subject']) ?></strong></a></li>
 
 #
-#---------[ 30. REPLACE BY ]-------------------------------------------------
+#---------[ 30. REPLACE BY (2 TIMES) ]-------------------------------------------------
 #
 
-		<li><span>»&#160;</span><a href="<?php echo makeurl("forum-", $cur_topic['forum_id'], $cur_topic['forum_name']) ?>"><?php echo pun_htmlspecialchars($cur_topic['forum_name']) ?></a></li>
-		<li><span>»&#160;</span><a href="<?php echo makeurl("topic-", $id, $cur_topic['subject']) ?>"><strong><?php echo pun_htmlspecialchars($cur_topic['subject']) ?></strong></a></li>
-		
-#
-#---------[ 29. FIND ]---------------------------------------------
-#
-		<li><span>»&#160;</span><a href="viewforum.php?id=<?php echo $cur_topic['forum_id'] ?>"><?php echo pun_htmlspecialchars($cur_topic['forum_name']) ?></a></li>
-		<li><span>»&#160;</span><a href="viewtopic.php?id=<?php echo $id ?>"><strong><?php echo pun_htmlspecialchars($cur_topic['subject']) ?></strong></a></li>
-
-#
-#---------[ 30. REPLACE BY ]-------------------------------------------------
-#
-
-		<li><span>»&#160;</span><a href="<?php echo makeurl("forum-", $cur_topic['forum_id'], $cur_topic['forum_name']) ?>"><?php echo pun_htmlspecialchars($cur_topic['forum_name']) ?></a></li>
-		<li><span>»&#160;</span><a href="<?php echo makeurl("topic-", $id, $cur_topic['subject']) ?>"><strong><?php echo pun_htmlspecialchars($cur_topic['subject']) ?></strong></a></li>
+		<li><span>»&#160;</span><a href="<?php echo makeurl("forum-", $cur_topic['forum_id'], $cur_topic['forum_name'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_topic['forum_name']) ?></a></li>
+		<li><span>»&#160;</span><a href="<?php echo makeurl("topic-", $id, $cur_topic['subject'], 1, false, false) ?>"><strong><?php echo pun_htmlspecialchars($cur_topic['subject']) ?></strong></a></li>
 
 #
 #---------[ 35. FIND ]---------------------------------------------
@@ -429,37 +400,51 @@ $paging_links = '<span class="pages-label">'.$lang_common['Pages'].': </span>'.p
 #---------[ 36. FIND ]---------------------------------------------
 #
 
-header('Location: viewtopic.php?pid='.$first_new_post_id.'#p'.$first_new_post_id);
+		if ($first_new_post_id)
+		{
+			header('Location: viewtopic.php?pid='.$first_new_post_id.'#p'.$first_new_post_id);
+			exit;
+		}
 
 #
 #---------[ 37. REPLACE BY ]-------------------------------------------------
 #
 
-A faire
+		$result2 = $db->query('SELECT subject, num_replies FROM '.$db->prefix.'topics WHERE id='.$id) or error('Unable to get subject', __FILE__, __LINE__, $db->error());
+		list($subject, $num_replies) = $db->fetch_row($result2);
 
-#
-#---------[ 38. FIND ]---------------------------------------------
-#
+		$num_pages = ceil(($num_replies + 1) / $pun_user['disp_posts']);
 
-header('Location: viewtopic.php?id='.$id.'&action=last');
-
-#
-#---------[ 39. REPLACE BY ]-------------------------------------------------
-#
-
-header('Location: topic-'.$id.'-last-message.html');
+		if ($first_new_post_id)
+		{
+			header('Location: '.makeurl("topic-", $id, $subject, $num_pages, false, $first_new_post_id));
+			exit;
+		}
 
 #
 #---------[ 40. FIND ]---------------------------------------------
 #
 
-header('Location: viewtopic.php?pid='.$last_post_id.'#p'.$last_post_id);
+	if ($last_post_id)
+	{
+		header('Location: viewtopic.php?pid='.$last_post_id.'#p'.$last_post_id);
+		exit;
+	}
 
 #
 #---------[ 41. REPLACE BY ]-------------------------------------------------
 #
 
-A faire
+	$result2 = $db->query('SELECT subject, num_replies FROM '.$db->prefix.'topics WHERE id='.$id) or error('Unable to get subject', __FILE__, __LINE__, $db->error());
+	list($subject, $num_replies) = $db->fetch_row($result2);
+
+	$num_pages = ceil(($num_replies + 1) / $pun_user['disp_posts']);
+
+	if ($last_post_id)
+	{
+		header('Location: '.makeurl("topic-", $id, $subject, $num_pages, false, $last_post_id));
+		exit;
+	}
 
 #
 #---------[ 40. FIND ]---------------------------------------------
@@ -471,7 +456,7 @@ A faire
 #---------[ 41. REPLACE BY ]-------------------------------------------------
 #
 
-<a href="<?php echo makeurl("topic-", $id, $cur_topic['subject'].'-page-'.$p, $new = null, $post = $cur_post['id']) ?>">
+<a href="<?php echo makeurl("topic-", $id, $cur_topic['subject'], $p, false, $cur_post['id']) ?>">
 
 #
 #---------[ 42. OPEN ]---------------------------------------------------------
