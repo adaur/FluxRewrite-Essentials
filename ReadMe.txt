@@ -1,13 +1,11 @@
 ##
 ##       		   Title:  FluxRewrite Essentials
 ##
-##   		     Version:  1.1.1
+##   		     Version:  2.0.0
 ##  	 Works on FluxBB:  1.4.*
-##    Date de la version:  2005-11-20 (PunRewrite - PunBB 1.2)
-## 						   2009-12-10 (PunRewrite Essentials 1.1 - PunBB 1.2)
-##						   2010-19-06 (FluxRewrite Essentials 1.1.1 - FluxBB 1.4)
-##               Authors:  Kévin Dunglas (keyes) [dunglas+punbb AT gmail DOT com] (PunRewrite)
-##                         adaur [adaur.underground@gmail.com] (PunRewrite Essentials / FluxRewrite Essentials)
+##    				Date:  2011-11-19
+##               Authors: adaur (adaur.underground@gmail.com)
+##                        Kévin Dunglas (PunRewrite)
 ##
 ##      	 Description: FluxRewrite is a mod created to enhance your positioning in search engines.
 ##						  It rewrites URLs to include the topic title. For example:
@@ -17,6 +15,7 @@
 ##                     		 * Rewrites all the URL seen in index.php, viewtopic.php, viewforum.php, search.php, edit.php, post.php, delete.php
 ##                    		 * Replaces all special caracters like "é" or "ç" by regular caracters like "e" or "c"
 ##                    		 * Deletes words of 3 letters or less
+##						  It also includes a very cool sitemap, thanks to Smartys (author) and premier.
 ##
 ## 		  Affected files: index.php
 ##                    	  viewforum.php
@@ -27,18 +26,25 @@
 ##                    	  post.php
 ##                    	  include/functions.php
 ##
-##             	   Notes:  You must use Apache with mod_rewrite enabled.
-##						   The rules can be translated to Lighttpd or Nginx.
+##			  Affects DB: Yes
 ##
-##            DISCLAIMER:  Please note that "mods" are not officially supported by
-##                         FluxBB. Installation of this modification is done at your
-##                  	   own risk. Backup your forum database and any and all
-##                   	   applicable files before proceeding.
+##             	   Notes: You must use Apache with mod_rewrite enabled.
+##						  The rules can be translated to Lighttpd or Nginx.
 ##
-
+##            DISCLAIMER: Please note that "mods" are not officially supported by
+##                        FluxBB. Installation of this modification is done at your
+##                  	  own risk. Backup your forum database and any and all
+##                   	  applicable files before proceeding.
+##
 
 #
-#---------[ 1. UP & RUN ]-------------------------------------------------------------------------------
+#---------[ 0. UPLOAD ]-------------------------------------------------------------------------------
+#
+
+All files from /files folder
+
+#
+#---------[ 1. RUN ]-------------------------------------------------------------------------------
 #
 
 install_mod.php
@@ -775,5 +781,3 @@ redirect(makeurl("topic-", $cur_post['tid'], $cur_post['subject'], $num_pages, f
 #
 #---------[ 88. Save your files and upload them; you're done! ]-----------------
 #
-
-Important : Don't forget to upload .htaccess!!
