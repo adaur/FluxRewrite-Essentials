@@ -31,7 +31,7 @@ $result = $db->query('SELECT f.id as forum_id, f.forum_name, last_post, num_topi
 
 while ($cur_forum = $db->fetch_assoc($result))
 {
-    $generator->addUrl(get_base_url().'/'.makeurl("forum-", $cur_forum['forum_id'], $cur_forum['forum_name'], 1, false, false), $cur_forum['last_post'], null, '0.5');
+    $generator->addUrl(get_base_url().'/'.fluxrewrite("forum-", $cur_forum['forum_id'], $cur_forum['forum_name'], 1, false, false), $cur_forum['last_post'], null, '0.5');
 
     $num_pages = ceil($cur_forum['num_topics'] / $pun_config['o_disp_topics_default']);
 
@@ -49,7 +49,7 @@ while ($cur_topic = $db->fetch_assoc($result))
 {
     $priority = ($cur_topic['sticky'] == '1') ? '1.0' : '0.75';
 
-    $generator->addUrl(get_base_url().'/'.makeurl("topic-", $cur_topic['topic_id'], $cur_topic['subject'], 1, false, false), $cur_topic['last_post'], null, $priority);
+    $generator->addUrl(get_base_url().'/'.fluxrewrite("topic-", $cur_topic['topic_id'], $cur_topic['subject'], 1, false, false), $cur_topic['last_post'], null, $priority);
 
     // We add one because the first post is not counted as a reply but needs to be taken into account for display
     $num_pages = ceil(($cur_topic['num_replies'] + 1) / $pun_config['o_disp_posts_default']);
