@@ -25,7 +25,7 @@ function clean_url($name) {
     return $url;
 }
  
-function makeurl($type, $id, $name, $page, $new_message = false, $post = false) {    
+function fluxrewrite($type, $id, $name, $page, $new_message = false, $post = false) {    
     
 	/*
 	   Rewrites the URL

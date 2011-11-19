@@ -219,7 +219,7 @@ $forum_field = '<h3><a href="viewforum.php?id='.$cur_forum['fid'].'">'.pun_htmls
 #---------[ 13. REPLACE BY ]-------------------------------------------------
 #
 
-$forum_field = '<h3><a href="'.makeurl("forum-", $cur_forum['fid'], $cur_forum['forum_name'], 1, false, false).'">'.pun_htmlspecialchars($cur_forum['forum_name']).'</a>'.(!empty($forum_field_new) ? ' '.$forum_field_new : '').'</h3>';
+$forum_field = '<h3><a href="'.fluxrewrite("forum-", $cur_forum['fid'], $cur_forum['forum_name'], 1, false, false).'">'.pun_htmlspecialchars($cur_forum['forum_name']).'</a>'.(!empty($forum_field_new) ? ' '.$forum_field_new : '').'</h3>';
 
 #
 #---------[ 14. FIND ]---------------------------------------------
@@ -247,7 +247,7 @@ if ($cur_forum['last_post'] != '')
 if ($cur_forum['last_post'] != '')
 {
 	$num_pages_topic = ceil(($cur_forum['num_replies'] + 1) / $pun_user['disp_posts']);
-	$last_post = '<a href="'.makeurl("topic-", $cur_forum['last_topic_id'], $cur_forum['last_topic'], $num_pages_topic, false, $cur_forum['last_post_id']).'">'.format_time($cur_forum['last_post']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_forum['last_poster']).'</span>';
+	$last_post = '<a href="'.fluxrewrite("topic-", $cur_forum['last_topic_id'], $cur_forum['last_topic'], $num_pages_topic, false, $cur_forum['last_post_id']).'">'.format_time($cur_forum['last_post']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_forum['last_poster']).'</span>';
 }
 
 
@@ -279,7 +279,7 @@ $last_post = '<a href="viewtopic.php?pid='.$cur_topic['last_post_id'].'#p'.$cur_
 #---------[ 22. REPLACE BY ]-------------------------------------------------
 #
 
-$last_post = '<a href="'.makeurl("topic-", $cur_topic['id'], $cur_topic['subject'], $num_pages_topic, false, $cur_topic['last_post_id']).'">'.format_time($cur_topic['last_post']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['last_poster']).'</span>';
+$last_post = '<a href="'.fluxrewrite("topic-", $cur_topic['id'], $cur_topic['subject'], $num_pages_topic, false, $cur_topic['last_post_id']).'">'.format_time($cur_topic['last_post']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['last_poster']).'</span>';
 
 #
 #---------[ 23. FIND ]---------------------------------------------
@@ -306,15 +306,15 @@ else
 
 if ($cur_topic['moved_to'] != 0)
 {
-	$subject = '<a href="'.makeurl("topic-", $cur_topic['moved_to'], $cur_topic['subject'], 1, false, false).'">'.pun_htmlspecialchars($cur_topic['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['poster']).'</span>';
+	$subject = '<a href="'.fluxrewrite("topic-", $cur_topic['moved_to'], $cur_topic['subject'], 1, false, false).'">'.pun_htmlspecialchars($cur_topic['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['poster']).'</span>';
 	$status_text[] = '<span class="movedtext">'.$lang_forum['Moved'].'</span>';
 	$item_status .= ' imoved';
 }
 else if ($cur_topic['closed'] == '0')
-	$subject = '<a href="'.makeurl("topic-", $cur_topic['id'], $cur_topic['subject'], 1, false, false).'">'.pun_htmlspecialchars($cur_topic['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['poster']).'</span>';
+	$subject = '<a href="'.fluxrewrite("topic-", $cur_topic['id'], $cur_topic['subject'], 1, false, false).'">'.pun_htmlspecialchars($cur_topic['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['poster']).'</span>';
 else
 {
-	$subject = '<a href="'.makeurl("topic-", $cur_topic['id'], $cur_topic['subject'], 1, false, false).'">'.pun_htmlspecialchars($cur_topic['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['poster']).'</span>';
+	$subject = '<a href="'.fluxrewrite("topic-", $cur_topic['id'], $cur_topic['subject'], 1, false, false).'">'.pun_htmlspecialchars($cur_topic['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['poster']).'</span>';
 	$status_text[] = '<span class="closedtext">'.$lang_forum['Closed'].'</span>';
 	$item_status .= ' iclosed';
 }
@@ -329,7 +329,7 @@ $subject_new_posts = '<span class="newtext">[ <a href="viewtopic.php?id='.$cur_t
 #---------[ 26. REPLACE BY ]-------------------------------------------------
 #
 
-$subject_new_posts = '<span class="newtext">[ <a href="'.makeurl("topic-", $cur_topic['id'], $cur_topic['subject'], null, true, false).'" title="'.$lang_common['New posts info'].'">'.$lang_common['New posts'].'</a> ]</span>';
+$subject_new_posts = '<span class="newtext">[ <a href="'.fluxrewrite("topic-", $cur_topic['id'], $cur_topic['subject'], null, true, false).'" title="'.$lang_common['New posts info'].'">'.$lang_common['New posts'].'</a> ]</span>';
 
 #
 #---------[ 27. FIND ]---------------------------------------------
@@ -367,7 +367,7 @@ $subject_multipage = '<span class="pagestext">[ '.paginate_rewrited($num_pages_t
 #---------[ 32. REPLACE BY  (2 TIMES) ]-------------------------------------------------
 #
 
-<li><span>»&#160;</span><a href="<?php echo makeurl("forum-", $id, $cur_forum['forum_name'], 1, false, false) ?>"><strong><?php echo pun_htmlspecialchars($cur_forum['forum_name']) ?></strong></a></li>
+<li><span>»&#160;</span><a href="<?php echo fluxrewrite("forum-", $id, $cur_forum['forum_name'], 1, false, false) ?>"><strong><?php echo pun_htmlspecialchars($cur_forum['forum_name']) ?></strong></a></li>
 
 
 #
@@ -387,8 +387,8 @@ viewtopic.php
 #---------[ 35. REPLACE BY (2 TIMES) ]-------------------------------------------------
 #
 
-<li><span>»&#160;</span><a href="<?php echo makeurl("forum-", $cur_topic['forum_id'], $cur_topic['forum_name'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_topic['forum_name']) ?></a></li>
-<li><span>»&#160;</span><a href="<?php echo makeurl("topic-", $id, $cur_topic['subject'], 1, false, false) ?>"><strong><?php echo pun_htmlspecialchars($cur_topic['subject']) ?></strong></a></li>
+<li><span>»&#160;</span><a href="<?php echo fluxrewrite("forum-", $cur_topic['forum_id'], $cur_topic['forum_name'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_topic['forum_name']) ?></a></li>
+<li><span>»&#160;</span><a href="<?php echo fluxrewrite("topic-", $id, $cur_topic['subject'], 1, false, false) ?>"><strong><?php echo pun_htmlspecialchars($cur_topic['subject']) ?></strong></a></li>
 
 #
 #---------[ 36. FIND ]---------------------------------------------
@@ -425,7 +425,7 @@ $num_pages = ceil(($num_replies + 1) / $pun_user['disp_posts']);
 
 if ($first_new_post_id)
 {
-	header('Location: '.makeurl("topic-", $id, $subject, $num_pages, false, $first_new_post_id));
+	header('Location: '.fluxrewrite("topic-", $id, $subject, $num_pages, false, $first_new_post_id));
 	exit;
 }
 
@@ -450,7 +450,7 @@ $num_pages = ceil(($num_replies + 1) / $pun_user['disp_posts']);
 
 if ($last_post_id)
 {
-	header('Location: '.makeurl("topic-", $id, $subject, $num_pages, false, $last_post_id));
+	header('Location: '.fluxrewrite("topic-", $id, $subject, $num_pages, false, $last_post_id));
 	exit;
 }
 
@@ -464,7 +464,7 @@ if ($last_post_id)
 #---------[ 43. REPLACE BY ]-------------------------------------------------
 #
 
-<a href="<?php echo makeurl("topic-", $id, $cur_topic['subject'], $p, false, $cur_post['id']) ?>">
+<a href="<?php echo fluxrewrite("topic-", $id, $cur_topic['subject'], $p, false, $cur_post['id']) ?>">
 
 #
 #---------[ 44. OPEN ]---------------------------------------------------------
@@ -482,7 +482,7 @@ $forum = '<a href="viewforum.php?id='.$cur_search['forum_id'].'">'.pun_htmlspeci
 #---------[ 46. REPLACE WITH ]---------------------------------------------------------
 #
 
-$forum = '<a href="'.makeurl("forum-", $cur_search['forum_id'], $cur_search['forum_name'], 1, false, false).'">'.pun_htmlspecialchars($cur_search['forum_name']).'</a>';
+$forum = '<a href="'.fluxrewrite("forum-", $cur_search['forum_id'], $cur_search['forum_name'], 1, false, false).'">'.pun_htmlspecialchars($cur_search['forum_name']).'</a>';
 
 #
 #---------[ 47. AFTER ]---------------------------------------------------------
@@ -507,8 +507,8 @@ $num_pages_topic = ceil(($cur_search['num_replies'] + 1) / $pun_user['disp_posts
 #---------[ 50. ADD ]---------------------------------------------------------
 #
 
-$last_post_h2 = '<a href="'.makeurl("topic-", $cur_search['tid'], $cur_search['subject'], $num_pages_topic, false, $cur_search['pid']).'">'.format_time($cur_search['last_post']).'</a>';
-$last_post_footer = '<a href="'.makeurl("topic-", $cur_search['tid'], $cur_search['subject'], $num_pages_topic, false, $cur_search['pid']).'">'.$lang_search['Go to post'].'</a>';
+$last_post_h2 = '<a href="'.fluxrewrite("topic-", $cur_search['tid'], $cur_search['subject'], $num_pages_topic, false, $cur_search['pid']).'">'.format_time($cur_search['last_post']).'</a>';
+$last_post_footer = '<a href="'.fluxrewrite("topic-", $cur_search['tid'], $cur_search['subject'], $num_pages_topic, false, $cur_search['pid']).'">'.$lang_search['Go to post'].'</a>';
 				
 #
 #---------[ 51. FIND ]---------------------------------------------------------
@@ -520,7 +520,7 @@ $last_post_footer = '<a href="'.makeurl("topic-", $cur_search['tid'], $cur_searc
 #---------[ 52. REPLACE WITH ]---------------------------------------------------------
 #
 
-<h2><span><span class="conr">#<?php echo ($start_from + $post_count) ?></span> <span><?php if ($cur_search['pid'] != $cur_search['first_post_id']) echo $lang_topic['Re'].' ' ?><?php echo $forum ?></span> <span>»&#160;<?php echo '<a href="'.makeurl("topic-", $cur_search['tid'], $cur_search['subject'], 1, false, false).'">'.pun_htmlspecialchars($cur_search['subject']).'</a>'; ?></span> <span>»&#160;<?php echo $last_post_h2 ?></a></span></span></h2>
+<h2><span><span class="conr">#<?php echo ($start_from + $post_count) ?></span> <span><?php if ($cur_search['pid'] != $cur_search['first_post_id']) echo $lang_topic['Re'].' ' ?><?php echo $forum ?></span> <span>»&#160;<?php echo '<a href="'.fluxrewrite("topic-", $cur_search['tid'], $cur_search['subject'], 1, false, false).'">'.pun_htmlspecialchars($cur_search['subject']).'</a>'; ?></span> <span>»&#160;<?php echo $last_post_h2 ?></a></span></span></h2>
 
 #
 #---------[ 53. FIND ]---------------------------------------------------------
@@ -533,7 +533,7 @@ $last_post_footer = '<a href="'.makeurl("topic-", $cur_search['tid'], $cur_searc
 #---------[ 54. REPLACE WITH ]---------------------------------------------------------
 #
 
-<li><span><?php echo '<a href="'.makeurl("topic-", $cur_search['tid'], $cur_search['subject'], 1, false, false).'">'.$lang_search['Go to topic'].'</a>'; ?></a></span></li>
+<li><span><?php echo '<a href="'.fluxrewrite("topic-", $cur_search['tid'], $cur_search['subject'], 1, false, false).'">'.$lang_search['Go to topic'].'</a>'; ?></a></span></li>
 <li><span><?php echo $last_post_footer ?></a></span></li>
 						
 #
@@ -546,7 +546,7 @@ $subject = '<a href="viewtopic.php?id='.$cur_search['tid'].'">'.pun_htmlspecialc
 #---------[ 56. REPLACE WITH ]---------------------------------------------------------
 #
 
-$subject = '<a href="'.makeurl("topic-", $cur_search['tid'], $cur_search['subject'], 1, false, false).'">'.pun_htmlspecialchars($cur_search['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_search['poster']).'</span>';
+$subject = '<a href="'.fluxrewrite("topic-", $cur_search['tid'], $cur_search['subject'], 1, false, false).'">'.pun_htmlspecialchars($cur_search['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_search['poster']).'</span>';
 
 #
 #---------[ 57. FIND ]---------------------------------------------------------
@@ -558,7 +558,7 @@ $subject_new_posts = '<span class="newtext">[ <a href="viewtopic.php?id='.$cur_s
 #---------[ 58. REPLACE WITH ]---------------------------------------------------------
 #
 
-$subject_new_posts = '<span class="newtext">[ <a href="'.makeurl("topic-", $cur_search['tid'], $cur_search['subject'], 0, true, false).'" title="'.$lang_common['New posts info'].'">'.$lang_common['New posts'].'</a> ]</span>';
+$subject_new_posts = '<span class="newtext">[ <a href="'.fluxrewrite("topic-", $cur_search['tid'], $cur_search['subject'], 0, true, false).'" title="'.$lang_common['New posts info'].'">'.$lang_common['New posts'].'</a> ]</span>';
 
 #
 #---------[ 59. FIND ]---------------------------------------------------------
@@ -586,7 +586,7 @@ if ($num_pages_topic > 1)
 else
 	$subject_multipage = null;
 
-$last_post = '<a href="'.makeurl("topic-", $cur_search['tid'], $cur_search['subject'], $num_pages_topic, false, $cur_search['last_post_id']).'">'.format_time($cur_search['last_post']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_search['last_poster']).'</span>';
+$last_post = '<a href="'.fluxrewrite("topic-", $cur_search['tid'], $cur_search['subject'], $num_pages_topic, false, $cur_search['last_post_id']).'">'.format_time($cur_search['last_post']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_search['last_poster']).'</span>';
 				
 #
 #---------[ 61. FIND ]---------------------------------------------------------
@@ -620,7 +620,7 @@ $result = $db->query('SELECT subject, num_replies FROM '.$db->prefix.'topics WHE
 list($subject, $num_replies) = $db->fetch_row($result);
 
 $num_pages = ceil(($num_replies + 1) / $pun_user['disp_posts']);
-redirect(makeurl("topic-", $new_tid, $subject, $num_pages, false, $new_pid), $lang_post['Post redirect']);
+redirect(fluxrewrite("topic-", $new_tid, $subject, $num_pages, false, $new_pid), $lang_post['Post redirect']);
 
 #
 #---------[ 66. FIND ]---------------------------------------------
@@ -633,8 +633,8 @@ redirect(makeurl("topic-", $new_tid, $subject, $num_pages, false, $new_pid), $la
 #---------[ 67. REPLACE BY ]-------------------------------------------------
 #
 
-<li><span>»&#160;</span><a href="<?php echo makeurl("forum-", $cur_posting['id'], $cur_posting['forum_name'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_posting['forum_name']) ?></a></li>
-<?php if (isset($cur_posting['subject'])): ?>			<li><span>»&#160;</span><a href="<?php echo makeurl("topic-", $tid, $cur_posting['subject'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_posting['subject']) ?></a>
+<li><span>»&#160;</span><a href="<?php echo fluxrewrite("forum-", $cur_posting['id'], $cur_posting['forum_name'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_posting['forum_name']) ?></a></li>
+<?php if (isset($cur_posting['subject'])): ?>			<li><span>»&#160;</span><a href="<?php echo fluxrewrite("topic-", $tid, $cur_posting['subject'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_posting['subject']) ?></a>
 
 #
 #---------[ 68. FIND ]---------------------------------------------
@@ -646,7 +646,7 @@ $mail_message = str_replace('<post_url>', get_base_url().'/viewtopic.php?pid='.$
 #---------[ 69. REPLACE BY (2 TIMES) ]-------------------------------------------------
 #
 
-$mail_message = str_replace('<post_url>', get_base_url().'/'.makeurl("topic-", $tid, $cur_posting['subject'], 1, false, $new_pid), $mail_message);
+$mail_message = str_replace('<post_url>', get_base_url().'/'.fluxrewrite("topic-", $tid, $cur_posting['subject'], 1, false, $new_pid), $mail_message);
 
 #
 #---------[ 70. FIND ]---------------------------------------------
@@ -658,7 +658,7 @@ $mail_message_full = str_replace('<post_url>', get_base_url().'/viewtopic.php?pi
 #---------[ 71. REPLACE BY ]-------------------------------------------------
 #
 
-$mail_message_full = str_replace('<post_url>', get_base_url().'/'.makeurl("topic-", $tid, $cur_posting['subject'], 1, false, $new_pid), $mail_message_full);
+$mail_message_full = str_replace('<post_url>', get_base_url().'/'.fluxrewrite("topic-", $tid, $cur_posting['subject'], 1, false, $new_pid), $mail_message_full);
 
 #
 #---------[ 72. FIND ]---------------------------------------------
@@ -670,7 +670,7 @@ $mail_message = str_replace('<topic_url>', get_base_url().'/viewtopic.php?id='.$
 #---------[ 73. REPLACE BY ]-------------------------------------------------
 #
 
-$mail_message = str_replace('<topic_url>', get_base_url().'/'.makeurl("topic-", $new_tid, $pun_config['o_censoring'] == '1' ? $censored_subject : $subject, 1, false, false), $mail_message);
+$mail_message = str_replace('<topic_url>', get_base_url().'/'.fluxrewrite("topic-", $new_tid, $pun_config['o_censoring'] == '1' ? $censored_subject : $subject, 1, false, false), $mail_message);
 
 
 #
@@ -683,7 +683,7 @@ $mail_message_full = str_replace('<topic_url>', get_base_url().'/viewtopic.php?i
 #---------[ 75. REPLACE BY ]-------------------------------------------------
 #
 
-$mail_message_full = str_replace('<topic_url>', get_base_url().'/'.makeurl("topic-", $new_tid, $pun_config['o_censoring'] == '1' ? $censored_subject : $subject, 1, false, false), $mail_message_full);
+$mail_message_full = str_replace('<topic_url>', get_base_url().'/'.fluxrewrite("topic-", $new_tid, $pun_config['o_censoring'] == '1' ? $censored_subject : $subject, 1, false, false), $mail_message_full);
 
 
 
@@ -713,7 +713,7 @@ $result2 = $db->query('SELECT COUNT(id) FROM '.$db->prefix.'posts WHERE id BETWE
 $num_replies = $db->result($result2);
 
 $num_pages = ceil(($num_replies + 1) / $pun_user['disp_posts']);
-redirect(makeurl("topic-", $cur_post['tid'], $subject, $num_pages, false, $id), $lang_post['Edit redirect']);
+redirect(fluxrewrite("topic-", $cur_post['tid'], $subject, $num_pages, false, $id), $lang_post['Edit redirect']);
 
 #
 #---------[ 79. FIND ]---------------------------------------------
@@ -726,8 +726,8 @@ redirect(makeurl("topic-", $cur_post['tid'], $subject, $num_pages, false, $id), 
 #---------[ 80. REPLACE BY ]-------------------------------------------------
 #
 
-<li><span>»&#160;</span><a href="<?php echo makeurl("forum-", $cur_post['fid'], $cur_post['forum_name'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_post['forum_name']) ?></a></li>
-<li><span>»&#160;</span><a href="<?php echo makeurl("topic-", $cur_post['tid'], $cur_post['subject'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_post['subject']) ?></a></li>
+<li><span>»&#160;</span><a href="<?php echo fluxrewrite("forum-", $cur_post['fid'], $cur_post['forum_name'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_post['forum_name']) ?></a></li>
+<li><span>»&#160;</span><a href="<?php echo fluxrewrite("topic-", $cur_post['tid'], $cur_post['subject'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_post['subject']) ?></a></li>
 
 #
 #---------[ 81. OPEN ]---------------------------------------------------------
@@ -745,7 +745,7 @@ redirect('viewforum.php?id='.$cur_post['fid'], $lang_delete['Topic del redirect'
 #---------[ 83. REPLACE BY ]-------------------------------------------------
 #
 
-redirect(makeurl("forum-", $cur_post['fid'], $cur_post['forum_name'], 1, false, false), $lang_delete['Topic del redirect']);
+redirect(fluxrewrite("forum-", $cur_post['fid'], $cur_post['forum_name'], 1, false, false), $lang_delete['Topic del redirect']);
 
 #
 #---------[ 84. FIND ]---------------------------------------------
@@ -761,7 +761,7 @@ $result2 = $db->query('SELECT COUNT(id) FROM '.$db->prefix.'posts WHERE id BETWE
 $num_replies = $db->result($result2);
 
 $num_pages = ceil(($num_replies + 1) / $pun_user['disp_posts']);
-redirect(makeurl("topic-", $cur_post['tid'], $cur_post['subject'], $num_pages, false, $post_id), $lang_delete['Post del redirect']);
+redirect(fluxrewrite("topic-", $cur_post['tid'], $cur_post['subject'], $num_pages, false, $post_id), $lang_delete['Post del redirect']);
 
 #
 #---------[ 86. FIND ]---------------------------------------------
@@ -774,8 +774,8 @@ redirect(makeurl("topic-", $cur_post['tid'], $cur_post['subject'], $num_pages, f
 #---------[ 87. REPLACE BY ]-------------------------------------------------
 #
 
-<li><span>»&#160;</span><a href="<?php echo makeurl("forum-", $cur_post['fid'], $cur_post['forum_name'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_post['forum_name']) ?></a></li>
-<li><span>»&#160;</span><a href="<?php echo makeurl("topic-", $cur_post['tid'], $cur_post['subject'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_post['subject']) ?></a></li>
+<li><span>»&#160;</span><a href="<?php echo fluxrewrite("forum-", $cur_post['fid'], $cur_post['forum_name'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_post['forum_name']) ?></a></li>
+<li><span>»&#160;</span><a href="<?php echo fluxrewrite("topic-", $cur_post['tid'], $cur_post['subject'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_post['subject']) ?></a></li>
 		
 			
 #
