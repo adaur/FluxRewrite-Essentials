@@ -474,20 +474,19 @@ $forum = '<a href="viewforum.php?id='.$cur_search['forum_id'].'">'.pun_htmlspeci
 #---------[ 42. REPLACE WITH ]---------------------------------------------------------
 #
 
-$forum = '<a href="'.makeurl("forum-", $cur_search['forum_id'], $cur_search['forum_name']).'">'.pun_htmlspecialchars($cur_search['forum_name']).'</a>';
+$forum = '<a href="'.makeurl("forum-", $cur_search['forum_id'], $cur_search['forum_name'], 1, false, false).'">'.pun_htmlspecialchars($cur_search['forum_name']).'</a>';
 
 #
 #---------[ 42. AFTER ]---------------------------------------------------------
 #
 
-if ($pun_config['o_censoring'] == '1')
 	$cur_search['subject'] = censor_words($cur_search['subject']);
 				
 #
 #---------[ 42. ADD ]---------------------------------------------------------
 #
 
-$num_pages_topic = ceil(($cur_search['num_replies'] + 1) / $pun_user['disp_posts']);
+	$num_pages_topic = ceil(($cur_search['num_replies'] + 1) / $pun_user['disp_posts']);
 
 #
 #---------[ 42. AFTER ]---------------------------------------------------------
@@ -500,8 +499,8 @@ $num_pages_topic = ceil(($cur_search['num_replies'] + 1) / $pun_user['disp_posts
 #---------[ 42. ADD ]---------------------------------------------------------
 #
 
-					$last_post_h2 = '<a href="'.makeurl("topic-", $cur_search['tid'], $cur_search['subject'].'-page-'.$num_pages_topic, $new = null, $post = $cur_search['pid']).'">'.format_time($cur_search['last_post']).'</a>';
-					$last_post_footer = '<a href="'.makeurl("topic-", $cur_search['tid'], $cur_search['subject'].'-page-'.$num_pages_topic, $new = null, $post = $cur_search['pid']).'">'.$lang_search['Go to post'].'</a>';
+				$last_post_h2 = '<a href="'.makeurl("topic-", $cur_search['tid'], $cur_search['subject'], $num_pages_topic, false, $cur_search['pid']).'">'.format_time($cur_search['last_post']).'</a>';
+				$last_post_footer = '<a href="'.makeurl("topic-", $cur_search['tid'], $cur_search['subject'], $num_pages_topic, false, $cur_search['pid']).'">'.$lang_search['Go to post'].'</a>';
 				
 #
 #---------[ 42. FIND ]---------------------------------------------------------
@@ -513,7 +512,7 @@ $num_pages_topic = ceil(($cur_search['num_replies'] + 1) / $pun_user['disp_posts
 #---------[ 42. REPLACE WITH ]---------------------------------------------------------
 #
 
-<h2><span><span class="conr">#<?php echo ($start_from + $post_count) ?></span> <span><?php if ($cur_search['pid'] != $cur_search['first_post_id']) echo $lang_topic['Re'].' ' ?><?php echo $forum ?></span> <span>Â»&#160;<?php echo '<a href="'.makeurl("topic-", $cur_search['tid'], $cur_search['subject']).'">'.pun_htmlspecialchars($cur_search['subject']).'</a>'; ?></span> <span>Â»&#160;<?php echo $last_post_h2 ?></a></span></span></h2>
+<h2><span><span class="conr">#<?php echo ($start_from + $post_count) ?></span> <span><?php if ($cur_search['pid'] != $cur_search['first_post_id']) echo $lang_topic['Re'].' ' ?><?php echo $forum ?></span> <span>»&#160;<?php echo '<a href="'.makeurl("topic-", $cur_search['tid'], $cur_search['subject'], 1, false, false).'">'.pun_htmlspecialchars($cur_search['subject']).'</a>'; ?></span> <span>»&#160;<?php echo $last_post_h2 ?></a></span></span></h2>
 
 #
 #---------[ 42. FIND ]---------------------------------------------------------
@@ -526,7 +525,7 @@ $num_pages_topic = ceil(($cur_search['num_replies'] + 1) / $pun_user['disp_posts
 #---------[ 42. REPLACE WITH ]---------------------------------------------------------
 #
 
-						<li><span><?php echo '<a href="'.makeurl("topic-", $cur_search['tid'], $cur_search['subject']).'">'.$lang_search['Go to topic'].'</a>'; ?></a></span></li>
+						<li><span><?php echo '<a href="'.makeurl("topic-", $cur_search['tid'], $cur_search['subject'], 1, false, false).'">'.$lang_search['Go to topic'].'</a>'; ?></a></span></li>
 						<li><span><?php echo $last_post_footer ?></a></span></li>
 						
 #
@@ -539,7 +538,7 @@ $subject = '<a href="viewtopic.php?id='.$cur_search['tid'].'">'.pun_htmlspecialc
 #---------[ 42. REPLACE WITH ]---------------------------------------------------------
 #
 
-$subject = '<a href="'.makeurl("topic-", $cur_search['tid'], $cur_search['subject']).'">'.pun_htmlspecialchars($cur_search['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_search['poster']).'</span>';
+$subject = '<a href="'.makeurl("topic-", $cur_search['tid'], $cur_search['subject'], 1, false, false).'">'.pun_htmlspecialchars($cur_search['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_search['poster']).'</span>';
 
 #
 #---------[ 42. FIND ]---------------------------------------------------------
@@ -551,41 +550,35 @@ $subject_new_posts = '<span class="newtext">[ <a href="viewtopic.php?id='.$cur_s
 #---------[ 42. REPLACE WITH ]---------------------------------------------------------
 #
 
-$subject_new_posts = '<span class="newtext">[ <a href="'.makeurl("topic-", $cur_search['tid'], $cur_search['subject'], $new = true).'" title="'.$lang_common['New posts info'].'">'.$lang_common['New posts'].'</a> ]</span>';
+$subject_new_posts = '<span class="newtext">[ <a href="'.makeurl("topic-", $cur_search['tid'], $cur_search['subject'], 0, true, false).'" title="'.$lang_common['New posts info'].'">'.$lang_common['New posts'].'</a> ]</span>';
 
 #
 #---------[ 42. FIND ]---------------------------------------------------------
 #
 
-$subject = implode(' ', $status_text).' '.$subject;
+				// Insert the status text before the subject
+				$subject = implode(' ', $status_text).' '.$subject;
 
-$num_pages_topic = ceil(($cur_search['num_replies'] + 1) / $pun_user['disp_posts']);
-				
-#
-#---------[ 42. DELETE ]---------------------------------------------------------
-#
-
-$num_pages_topic = ceil(($cur_search['num_replies'] + 1) / $pun_user['disp_posts']);
-
-#
-#---------[ 42. FIND ]---------------------------------------------------------
-#
+				$num_pages_topic = ceil(($cur_search['num_replies'] + 1) / $pun_user['disp_posts']);
 
 				if ($num_pages_topic > 1)
 					$subject_multipage = '<span class="pagestext">[ '.paginate($num_pages_topic, -1, 'viewtopic.php?id='.$cur_search['tid']).' ]</span>';
 				else
 					$subject_multipage = null;
-
+					
 #
 #---------[ 42. REPLACE WITH ]---------------------------------------------------------
 #
+				
+				// Insert the status text before the subject
+				$subject = implode(' ', $status_text).' '.$subject;
 
 				if ($num_pages_topic > 1)
 					$subject_multipage = '<span class="pagestext">[ '.paginate_rewrited($num_pages_topic, -1, 'topic-'.$cur_search['tid'].'-'.clean_url($cur_search['subject'])).' ]</span>';
 				else
 					$subject_multipage = null;
 				
-				$last_post = '<a href="'.makeurl("topic-", $cur_search['tid'], $cur_search['subject'].'-page-'.$num_pages_topic, $new = null, $post = $cur_search['last_post_id']).'">'.format_time($cur_search['last_post']).'</a>';
+				$last_post = '<a href="'.makeurl("topic-", $cur_search['tid'], $cur_search['subject'], $num_pages_topic, false, $cur_search['last_post_id']).'">'.format_time($cur_search['last_post']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_search['last_poster']).'</span>';
 				
 #
 #---------[ 42. FIND ]---------------------------------------------------------
