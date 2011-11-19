@@ -612,7 +612,7 @@ post.php
 		list($subject, $num_replies) = $db->fetch_row($result);
 		
 		$num_pages = ceil(($num_replies + 1) / $pun_user['disp_posts']);
-		redirect(makeurl("topic-", $new_tid, $subject.'-page-'.$num_pages, $new = null, $post = $new_pid), $lang_post['Post redirect']);
+		redirect(makeurl("topic-", $new_tid, $subject, $num_pages, false, $new_pid), $lang_post['Post redirect']);
 
 #
 #---------[ 62. FIND ]---------------------------------------------
@@ -625,8 +625,8 @@ post.php
 #---------[ 63. REPLACE BY ]-------------------------------------------------
 #
 
-<li><span>»&#160;</span><a href="<?php echo makeurl("forum-", $cur_posting['id'], $cur_posting['forum_name']) ?>"><?php echo pun_htmlspecialchars($cur_posting['forum_name']) ?></a></li>
-<?php if (isset($cur_posting['subject'])): ?>			<li><span>»&#160;</span><a href="<?php echo makeurl("topic-", $tid, $cur_posting['subject']) ?>"><?php echo pun_htmlspecialchars($cur_posting['subject']) ?></a>
+<li><span>»&#160;</span><a href="<?php echo makeurl("forum-", $cur_posting['id'], $cur_posting['forum_name'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_posting['forum_name']) ?></a></li>
+<?php if (isset($cur_posting['subject'])): ?>			<li><span>»&#160;</span><a href="<?php echo makeurl("topic-", $tid, $cur_posting['subject'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_posting['subject']) ?></a>
 
 #
 #---------[ 64. FIND ]---------------------------------------------
@@ -635,10 +635,10 @@ post.php
 $mail_message = str_replace('<post_url>', get_base_url().'/viewtopic.php?pid='.$new_pid.'#p'.$new_pid, $mail_message);
 
 #
-#---------[ 65. REPLACE BY ]-------------------------------------------------
+#---------[ 65. REPLACE BY (2 TIMES) ]-------------------------------------------------
 #
 
-$mail_message = str_replace('<post_url>', get_base_url().'/'.makeurl("topic-", $tid, $cur_posting['subject'], $new = null, $post = $new_pid), $mail_message);
+$mail_message = str_replace('<post_url>', get_base_url().'/'.makeurl("topic-", $tid, $cur_posting['subject'], 1, false, $new_pid), $mail_message);
 
 #
 #---------[ 66. FIND ]---------------------------------------------
@@ -650,7 +650,7 @@ $mail_message_full = str_replace('<post_url>', get_base_url().'/viewtopic.php?pi
 #---------[ 67. REPLACE BY ]-------------------------------------------------
 #
 
-$mail_message_full = str_replace('<post_url>', get_base_url().'/'.makeurl("topic-", $tid, $cur_posting['subject'], $new = null, $post = $new_pid), $mail_message_full);
+$mail_message_full = str_replace('<post_url>', get_base_url().'/'.makeurl("topic-", $tid, $cur_posting['subject'], 1, false, $new_pid), $mail_message_full);
 
 #
 #---------[ 68. FIND ]---------------------------------------------
@@ -662,7 +662,7 @@ $mail_message = str_replace('<topic_url>', get_base_url().'/viewtopic.php?id='.$
 #---------[ 69. REPLACE BY ]-------------------------------------------------
 #
 
-$mail_message = str_replace('<topic_url>', get_base_url().'/'.makeurl("topic-", $new_tid, $pun_config['o_censoring'] == '1' ? $censored_subject : $subject), $mail_message);
+$mail_message = str_replace('<topic_url>', get_base_url().'/'.makeurl("topic-", $new_tid, $pun_config['o_censoring'] == '1' ? $censored_subject : $subject, 1, false, false), $mail_message);
 
 
 #
@@ -675,7 +675,7 @@ $mail_message_full = str_replace('<topic_url>', get_base_url().'/viewtopic.php?i
 #---------[ 69. REPLACE BY ]-------------------------------------------------
 #
 
-$mail_message_full = str_replace('<topic_url>', get_base_url().'/'.makeurl("topic-", $new_tid, $pun_config['o_censoring'] == '1' ? $censored_subject : $subject), $mail_message_full);
+$mail_message_full = str_replace('<topic_url>', get_base_url().'/'.makeurl("topic-", $new_tid, $pun_config['o_censoring'] == '1' ? $censored_subject : $subject, 1, false, false), $mail_message_full);
 
 
 
@@ -701,11 +701,11 @@ redirect('viewtopic.php?pid='.$id.'#p'.$id, $lang_post['Edit redirect']);
 			$subject = $db->result($result);
 		}
 
-		$result2 = $db->query('SELECT COUNT(id) FROM '.$db->prefix.'posts WHERE id BETWEEN '.$cur_post['first_post_id'].' AND '.$id.' AND topic_id='.$cur_post['tid']) or error('Unable to get subject', __FILE__, __LINE__, $db->error());
+		$result2 = $db->query('SELECT COUNT(id) FROM '.$db->prefix.'posts WHERE id BETWEEN '.$cur_post['first_post_id'].' AND '.$id.' AND topic_id='.$cur_post['tid']) or error('Unable to get num_replies', __FILE__, __LINE__, $db->error());
 		$num_replies = $db->result($result2);
 		
 		$num_pages = ceil(($num_replies + 1) / $pun_user['disp_posts']);
-		redirect(makeurl("topic-", $cur_post['tid'], $subject.'-page-'.$num_pages, $new = null, $post = $id), $lang_post['Edit redirect']);
+		redirect(makeurl("topic-", $cur_post['tid'], $subject, $num_pages, false, $id), $lang_post['Edit redirect']);
 
 #
 #---------[ 73. FIND ]---------------------------------------------
@@ -718,8 +718,8 @@ redirect('viewtopic.php?pid='.$id.'#p'.$id, $lang_post['Edit redirect']);
 #---------[ 74. REPLACE BY ]-------------------------------------------------
 #
 
-			<li><span>»&#160;</span><a href="<?php echo makeurl("forum-", $cur_post['fid'], $cur_post['forum_name']) ?>"><?php echo pun_htmlspecialchars($cur_post['forum_name']) ?></a></li>
-			<li><span>»&#160;</span><a href="<?php echo makeurl("topic-", $cur_post['tid'], $cur_post['subject']) ?>"><?php echo pun_htmlspecialchars($cur_post['subject']) ?></a></li>
+			<li><span>»&#160;</span><a href="<?php echo makeurl("forum-", $cur_post['fid'], $cur_post['forum_name'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_post['forum_name']) ?></a></li>
+			<li><span>»&#160;</span><a href="<?php echo makeurl("topic-", $cur_post['tid'], $cur_post['subject'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_post['subject']) ?></a></li>
 
 #
 #---------[ 75. OPEN ]---------------------------------------------------------
@@ -737,7 +737,7 @@ redirect('viewforum.php?id='.$cur_post['fid'], $lang_delete['Topic del redirect'
 #---------[ 77. REPLACE BY ]-------------------------------------------------
 #
 
-redirect(makeurl("forum-", $cur_post['fid'], $cur_post['forum_name']), $lang_delete['Topic del redirect']);
+redirect(makeurl("forum-", $cur_post['fid'], $cur_post['forum_name'], 1, false, false), $lang_delete['Topic del redirect']);
 
 #
 #---------[ 78. FIND ]---------------------------------------------
@@ -749,7 +749,11 @@ redirect('viewtopic.php?pid='.$post_id.'#p'.$post_id, $lang_delete['Post del red
 #---------[ 79. REPLACE BY ]----------------------------------------
 #
 
-redirect(makeurl("topic-", $cur_post['tid'], $cur_post['subject']), $lang_delete['Post del redirect']);
+		$result2 = $db->query('SELECT COUNT(id) FROM '.$db->prefix.'posts WHERE id BETWEEN '.$cur_post['first_post_id'].' AND '.$post_id.' AND topic_id='.$cur_post['tid']) or error('Unable to get num_replies', __FILE__, __LINE__, $db->error());
+		$num_replies = $db->result($result2);
+
+		$num_pages = ceil(($num_replies + 1) / $pun_user['disp_posts']);
+		redirect(makeurl("topic-", $cur_post['tid'], $cur_post['subject'], $num_pages, false, $post_id), $lang_delete['Post del redirect']);
 
 #
 #---------[ 80. FIND ]---------------------------------------------
@@ -762,8 +766,8 @@ redirect(makeurl("topic-", $cur_post['tid'], $cur_post['subject']), $lang_delete
 #---------[ 81. REPLACE BY ]-------------------------------------------------
 #
 
-			<li><span>»&#160;</span><a href="<?php echo makeurl("forum-", $cur_post['fid'], $cur_post['forum_name']) ?>"><?php echo pun_htmlspecialchars($cur_post['forum_name']) ?></a></li>
-			<li><span>»&#160;</span><a href="message-<?php echo $id ?>.html#p<?php echo $id ?>"><?php echo pun_htmlspecialchars($cur_post['subject']) ?></a></li>
+			<li><span>»&#160;</span><a href="<?php echo makeurl("forum-", $cur_post['fid'], $cur_post['forum_name'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_post['forum_name']) ?></a></li>
+			<li><span>»&#160;</span><a href="<?php echo makeurl("topic-", $cur_post['tid'], $cur_post['subject'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_post['subject']) ?></a></li>
 		
 			
 #
