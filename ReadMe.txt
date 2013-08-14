@@ -1,9 +1,9 @@
 ##
 ##       		   Title:  FluxRewrite Essentials
 ##
-##   		     Version:  2.0.0
-##  	 Works on FluxBB:  1.4.*
-##    				Date:  2011-11-19
+##   		     Version:  2.0.1
+##  	 Works on FluxBB:  1.5.1, 1.5.2, 1.5.3, 1.5.4
+##    				Date:  2013-08-14
 ##               Authors: adaur (adaur.underground@gmail.com)
 ##                        Kévin Dunglas (PunRewrite)
 ##
@@ -257,32 +257,66 @@ if ($cur_forum['last_post'] != '')
 
 viewforum.php
 
+
 #
-#---------[ 18. MOVE ]---------------------------------------------------------
+#---------[ 19. FIND ]---------------------------------------------
 #
+
+// Should we display the dot or not? :)
+if (!$pun_user['is_guest'] && $pun_config['o_show_dot'] == '1')
+{
+	if ($cur_topic['has_posted'] == $pun_user['id'])
+	{
+		$subject = '<strong class="ipost">·&#160;</strong>'.$subject;
+		$item_status .= ' iposted';
+	}
+}
 
 $num_pages_topic = ceil(($cur_topic['num_replies'] + 1) / $pun_user['disp_posts']);
 
+
 #
-#---------[ 20. AFTER ]---------------------------------------------------------
+#---------[ 20. REPLACE BY ]-------------------------------------------------
 #
 
-$icon_type = 'icon';
+// Should we display the dot or not? :)
+if (!$pun_user['is_guest'] && $pun_config['o_show_dot'] == '1')
+{
+	if ($cur_topic['has_posted'] == $pun_user['id'])
+	{
+		$subject = '<strong class="ipost">·&#160;</strong>'.$subject;
+		$item_status .= ' iposted';
+	}
+}
 
 #
 #---------[ 21. FIND ]---------------------------------------------
 #
 
+$icon_type = 'icon';
+
+
+#
+#---------[ 22. ADD AFTER ]-------------------------------------------------
+#
+
+$num_pages_topic = ceil(($cur_topic['num_replies'] + 1) / $pun_user['disp_posts']);
+
+
+#
+#---------[ 23. FIND ]---------------------------------------------
+#
+
 $last_post = '<a href="viewtopic.php?pid='.$cur_topic['last_post_id'].'#p'.$cur_topic['last_post_id'].'">'.format_time($cur_topic['last_post']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['last_poster']).'</span>';
 
 #
-#---------[ 22. REPLACE BY ]-------------------------------------------------
+#---------[ 24. REPLACE BY ]-------------------------------------------------
 #
 
 $last_post = '<a href="'.fluxrewrite("topic-", $cur_topic['id'], $cur_topic['subject'], $num_pages_topic, false, $cur_topic['last_post_id']).'">'.format_time($cur_topic['last_post']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_topic['last_poster']).'</span>';
 
 #
-#---------[ 23. FIND ]---------------------------------------------
+#---------[ 25. FIND ]---------------------------------------------
 #
 
 if ($cur_topic['moved_to'] != 0)
@@ -301,7 +335,7 @@ else
 }
 
 #
-#---------[ 24. REPLACE BY ]-------------------------------------------------
+#---------[ 26. REPLACE BY ]-------------------------------------------------
 #
 
 if ($cur_topic['moved_to'] != 0)
@@ -320,92 +354,118 @@ else
 }
 
 #
-#---------[ 25. FIND ]---------------------------------------------
+#---------[ 27. FIND ]---------------------------------------------
 #
 
 $subject_new_posts = '<span class="newtext">[ <a href="viewtopic.php?id='.$cur_topic['id'].'&amp;action=new" title="'.$lang_common['New posts info'].'">'.$lang_common['New posts'].'</a> ]</span>';
 
 #
-#---------[ 26. REPLACE BY ]-------------------------------------------------
+#---------[ 28. REPLACE BY ]-------------------------------------------------
 #
 
 $subject_new_posts = '<span class="newtext">[ <a href="'.fluxrewrite("topic-", $cur_topic['id'], $cur_topic['subject'], null, true, false).'" title="'.$lang_common['New posts info'].'">'.$lang_common['New posts'].'</a> ]</span>';
 
 #
-#---------[ 27. FIND ]---------------------------------------------
+#---------[ 29. FIND ]---------------------------------------------
 #
 
 // Generate paging links
 $paging_links = '<span class="pages-label">'.$lang_common['Pages'].' </span>'.paginate($num_pages, $p, 'viewforum.php?id='.$id);
 
 #
-#---------[ 28. REPLACE BY ]-------------------------------------------------
+#---------[ 30. REPLACE BY ]-------------------------------------------------
 #
 
 // Generate paging links 
 $paging_links = '<span class="pages-label">'.$lang_common['Pages'].' </span>'.paginate_rewrited($num_pages, $p, 'forum-'.$id.'-'.clean_url($cur_forum['forum_name']));
 
 #
-#---------[ 29. FIND ]---------------------------------------------
+#---------[ 31. FIND ]---------------------------------------------
 #
 
 $subject_multipage = '<span class="pagestext">[ '.paginate($num_pages_topic, -1, 'viewtopic.php?id='.$cur_topic['id']).' ]</span>';
 
 #
-#---------[ 30. REPLACE BY ]-------------------------------------------------
+#---------[ 32. REPLACE BY ]-------------------------------------------------
 #
 
 $subject_multipage = '<span class="pagestext">[ '.paginate_rewrited($num_pages_topic, -1, 'topic-'.$cur_topic['id'].'-'.clean_url($cur_topic['subject'])).' ]</span>';
 
 #
-#---------[ 31. FIND ]---------------------------------------------
+#---------[ 33. FIND ]---------------------------------------------
 #
 
-<li><span>»&#160;</span><a href="viewforum.php?id=<?php echo $id ?>"><strong><?php echo pun_htmlspecialchars($cur_forum['forum_name']) ?></strong></a></li>
+<li><span>»&#160;</span><strong><a href="viewforum.php?id=<?php echo $id ?>"><?php echo pun_htmlspecialchars($cur_forum['forum_name']) ?></a></strong></li>
 
 #
-#---------[ 32. REPLACE BY  (2 TIMES) ]-------------------------------------------------
+#---------[ 34. REPLACE BY ]-------------------------------------------------
 #
 
-<li><span>»&#160;</span><a href="<?php echo fluxrewrite("forum-", $id, $cur_forum['forum_name'], 1, false, false) ?>"><strong><?php echo pun_htmlspecialchars($cur_forum['forum_name']) ?></strong></a></li>
+<li><span>»&#160;</span><strong><a href="<?php echo fluxrewrite("forum-", $id, $cur_forum['forum_name'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_forum['forum_name']) ?></strong></a></li>
+
+#
+#---------[ 35. FIND ]---------------------------------------------
+#
+
+<li><span>»&#160;</span><strong><a href="viewforum.php?id=<?php echo $id ?>"><?php echo pun_htmlspecialchars($cur_forum['forum_name']) ?></a></strong></li>
+
+#
+#---------[ 36. REPLACE BY ]-------------------------------------------------
+#
+
+<li><span>»&#160;</span><strong><a href="<?php echo fluxrewrite("forum-", $id, $cur_forum['forum_name'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_forum['forum_name']) ?></strong></a></li>
 
 
 #
-#---------[ 33. OPEN ]---------------------------------------------------------
+#---------[ 37. OPEN ]---------------------------------------------------------
 #
 
 viewtopic.php
 
 #
-#---------[ 34. FIND ]---------------------------------------------
+#---------[ 38. FIND ]---------------------------------------------
 #
 
 <li><span>»&#160;</span><a href="viewforum.php?id=<?php echo $cur_topic['forum_id'] ?>"><?php echo pun_htmlspecialchars($cur_topic['forum_name']) ?></a></li>
-<li><span>»&#160;</span><a href="viewtopic.php?id=<?php echo $id ?>"><strong><?php echo pun_htmlspecialchars($cur_topic['subject']) ?></strong></a></li>
+<li><span>»&#160;</span><strong><a href="viewtopic.php?id=<?php echo $id ?>"><?php echo pun_htmlspecialchars($cur_topic['subject']) ?></a></strong></li>
 
 #
-#---------[ 35. REPLACE BY (2 TIMES) ]-------------------------------------------------
+#---------[ 39. REPLACE BY ]-------------------------------------------------
 #
 
 <li><span>»&#160;</span><a href="<?php echo fluxrewrite("forum-", $cur_topic['forum_id'], $cur_topic['forum_name'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_topic['forum_name']) ?></a></li>
-<li><span>»&#160;</span><a href="<?php echo fluxrewrite("topic-", $id, $cur_topic['subject'], 1, false, false) ?>"><strong><?php echo pun_htmlspecialchars($cur_topic['subject']) ?></strong></a></li>
+<li><span>»&#160;</span><strong><a href="<?php echo fluxrewrite("topic-", $id, $cur_topic['subject'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_topic['subject']) ?></a></strong></li>
 
 #
-#---------[ 36. FIND ]---------------------------------------------
+#---------[ 40. FIND ]---------------------------------------------
+#
+
+<li><span>»&#160;</span><a href="viewforum.php?id=<?php echo $cur_topic['forum_id'] ?>"><?php echo pun_htmlspecialchars($cur_topic['forum_name']) ?></a></li>
+<li><span>»&#160;</span><strong><a href="viewtopic.php?id=<?php echo $id ?>"><?php echo pun_htmlspecialchars($cur_topic['subject']) ?></a></strong></li>
+
+#
+#---------[ 41. REPLACE BY ]-------------------------------------------------
+#
+
+<li><span>»&#160;</span><a href="<?php echo fluxrewrite("forum-", $cur_topic['forum_id'], $cur_topic['forum_name'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_topic['forum_name']) ?></a></li>
+<li><span>»&#160;</span><strong><a href="<?php echo fluxrewrite("topic-", $id, $cur_topic['subject'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_topic['subject']) ?></a></strong></li>
+
+#
+#---------[ 42. FIND ]---------------------------------------------
 #
 
 // Generate paging links
 $paging_links = '<span class="pages-label">'.$lang_common['Pages'].' </span>'.paginate($num_pages, $p, 'viewtopic.php?id='.$id);
 
 #
-#---------[ 37. REPLACE BY ]-------------------------------------------------
+#---------[ 43. REPLACE BY ]-------------------------------------------------
 #
 
 // Generate paging links
 $paging_links = '<span class="pages-label">'.$lang_common['Pages'].': </span>'.paginate_rewrited($num_pages, $p, 'topic-'.$id.'-'.clean_url($cur_topic['subject']));
 
 #
-#---------[ 38. FIND ]---------------------------------------------
+#---------[ 44. FIND ]---------------------------------------------
 #
 
 if ($first_new_post_id)
@@ -415,7 +475,7 @@ if ($first_new_post_id)
 }
 
 #
-#---------[ 39. REPLACE BY ]-------------------------------------------------
+#---------[ 45. REPLACE BY ]-------------------------------------------------
 #
 
 $result2 = $db->query('SELECT subject, num_replies FROM '.$db->prefix.'topics WHERE id='.$id) or error('Unable to get subject', __FILE__, __LINE__, $db->error());
@@ -430,7 +490,7 @@ if ($first_new_post_id)
 }
 
 #
-#---------[ 40. FIND ]---------------------------------------------
+#---------[ 46. FIND ]---------------------------------------------
 #
 
 if ($last_post_id)
@@ -440,7 +500,7 @@ if ($last_post_id)
 }
 
 #
-#---------[ 41. REPLACE BY ]-------------------------------------------------
+#---------[ 47. REPLACE BY ]-------------------------------------------------
 #
 
 $result2 = $db->query('SELECT subject, num_replies FROM '.$db->prefix.'topics WHERE id='.$id) or error('Unable to get subject', __FILE__, __LINE__, $db->error());
@@ -455,113 +515,113 @@ if ($last_post_id)
 }
 
 #
-#---------[ 42. FIND ]---------------------------------------------
+#---------[ 48. FIND ]---------------------------------------------
 #
 
 <a href="viewtopic.php?pid=<?php echo $cur_post['id'].'#p'.$cur_post['id'] ?>">
 
 #
-#---------[ 43. REPLACE BY ]-------------------------------------------------
+#---------[ 49. REPLACE BY ]-------------------------------------------------
 #
 
 <a href="<?php echo fluxrewrite("topic-", $id, $cur_topic['subject'], $p, false, $cur_post['id']) ?>">
 
 #
-#---------[ 44. OPEN ]---------------------------------------------------------
+#---------[ 50. OPEN ]---------------------------------------------------------
 #
 
 search.php
 
 #
-#---------[ 45. FIND ]---------------------------------------------------------
+#---------[ 51. FIND ]---------------------------------------------------------
 #
 
 $forum = '<a href="viewforum.php?id='.$cur_search['forum_id'].'">'.pun_htmlspecialchars($cur_search['forum_name']).'</a>';
 
 #
-#---------[ 46. REPLACE WITH ]---------------------------------------------------------
+#---------[ 52. REPLACE WITH ]---------------------------------------------------------
 #
 
 $forum = '<a href="'.fluxrewrite("forum-", $cur_search['forum_id'], $cur_search['forum_name'], 1, false, false).'">'.pun_htmlspecialchars($cur_search['forum_name']).'</a>';
 
 #
-#---------[ 47. AFTER ]---------------------------------------------------------
+#---------[ 53. FIND ]---------------------------------------------------------
 #
 
 $cur_search['subject'] = censor_words($cur_search['subject']);
 				
 #
-#---------[ 48. ADD ]---------------------------------------------------------
+#---------[ 54. ADD AFTER ]---------------------------------------------------------
 #
 
 $num_pages_topic = ceil(($cur_search['num_replies'] + 1) / $pun_user['disp_posts']);
 
 #
-#---------[ 49. AFTER ]---------------------------------------------------------
+#---------[ 55. FIND ]---------------------------------------------------------
 #
 
 		$pposter = '<strong>'.$pposter.'</strong>';
 }
 				
 #
-#---------[ 50. ADD ]---------------------------------------------------------
+#---------[ 56. ADD AFTER ]---------------------------------------------------------
 #
 
 $last_post_h2 = '<a href="'.fluxrewrite("topic-", $cur_search['tid'], $cur_search['subject'], $num_pages_topic, false, $cur_search['pid']).'">'.format_time($cur_search['last_post']).'</a>';
 $last_post_footer = '<a href="'.fluxrewrite("topic-", $cur_search['tid'], $cur_search['subject'], $num_pages_topic, false, $cur_search['pid']).'">'.$lang_search['Go to post'].'</a>';
 				
 #
-#---------[ 51. FIND ]---------------------------------------------------------
+#---------[ 57. FIND ]---------------------------------------------------------
 #
 
 <h2><span><span class="conr">#<?php echo ($start_from + $post_count) ?></span> <span><?php if ($cur_search['pid'] != $cur_search['first_post_id']) echo $lang_topic['Re'].' ' ?><?php echo $forum ?></span> <span>»&#160;<a href="viewtopic.php?id=<?php echo $cur_search['tid'] ?>"><?php echo pun_htmlspecialchars($cur_search['subject']) ?></a></span> <span>»&#160;<a href="viewtopic.php?pid=<?php echo $cur_search['pid'].'#p'.$cur_search['pid'] ?>"><?php echo format_time($cur_search['pposted']) ?></a></span></span></h2>
 
 #
-#---------[ 52. REPLACE WITH ]---------------------------------------------------------
+#---------[ 58. REPLACE WITH ]---------------------------------------------------------
 #
 
 <h2><span><span class="conr">#<?php echo ($start_from + $post_count) ?></span> <span><?php if ($cur_search['pid'] != $cur_search['first_post_id']) echo $lang_topic['Re'].' ' ?><?php echo $forum ?></span> <span>»&#160;<?php echo '<a href="'.fluxrewrite("topic-", $cur_search['tid'], $cur_search['subject'], 1, false, false).'">'.pun_htmlspecialchars($cur_search['subject']).'</a>'; ?></span> <span>»&#160;<?php echo $last_post_h2 ?></a></span></span></h2>
 
 #
-#---------[ 53. FIND ]---------------------------------------------------------
+#---------[ 59. FIND ]---------------------------------------------------------
 #
 
 <li><span><a href="viewtopic.php?id=<?php echo $cur_search['tid'] ?>"><?php echo $lang_search['Go to topic'] ?></a></span></li>
 <li><span><a href="viewtopic.php?pid=<?php echo $cur_search['pid'].'#p'.$cur_search['pid'] ?>"><?php echo $lang_search['Go to post'] ?></a></span></li>
 						
 #
-#---------[ 54. REPLACE WITH ]---------------------------------------------------------
+#---------[ 60. REPLACE WITH ]---------------------------------------------------------
 #
 
 <li><span><?php echo '<a href="'.fluxrewrite("topic-", $cur_search['tid'], $cur_search['subject'], 1, false, false).'">'.$lang_search['Go to topic'].'</a>'; ?></a></span></li>
 <li><span><?php echo $last_post_footer ?></a></span></li>
 						
 #
-#---------[ 55. FIND ]---------------------------------------------------------
+#---------[ 61. FIND ]---------------------------------------------------------
 #
 
 $subject = '<a href="viewtopic.php?id='.$cur_search['tid'].'">'.pun_htmlspecialchars($cur_search['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_search['poster']).'</span>';
 
 #
-#---------[ 56. REPLACE WITH ]---------------------------------------------------------
+#---------[ 62. REPLACE WITH ]---------------------------------------------------------
 #
 
 $subject = '<a href="'.fluxrewrite("topic-", $cur_search['tid'], $cur_search['subject'], 1, false, false).'">'.pun_htmlspecialchars($cur_search['subject']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_search['poster']).'</span>';
 
 #
-#---------[ 57. FIND ]---------------------------------------------------------
+#---------[ 63. FIND ]---------------------------------------------------------
 #
 
 $subject_new_posts = '<span class="newtext">[ <a href="viewtopic.php?id='.$cur_search['tid'].'&amp;action=new" title="'.$lang_common['New posts info'].'">'.$lang_common['New posts'].'</a> ]</span>';
 
 #
-#---------[ 58. REPLACE WITH ]---------------------------------------------------------
+#---------[ 64. REPLACE WITH ]---------------------------------------------------------
 #
 
 $subject_new_posts = '<span class="newtext">[ <a href="'.fluxrewrite("topic-", $cur_search['tid'], $cur_search['subject'], 0, true, false).'" title="'.$lang_common['New posts info'].'">'.$lang_common['New posts'].'</a> ]</span>';
 
 #
-#---------[ 59. FIND ]---------------------------------------------------------
+#---------[ 65. FIND ]---------------------------------------------------------
 #
 
 // Insert the status text before the subject
@@ -575,7 +635,7 @@ else
 	$subject_multipage = null;
 					
 #
-#---------[ 60. REPLACE WITH ]---------------------------------------------------------
+#---------[ 66. REPLACE WITH ]---------------------------------------------------------
 #
 				
 // Insert the status text before the subject
@@ -589,31 +649,31 @@ else
 $last_post = '<a href="'.fluxrewrite("topic-", $cur_search['tid'], $cur_search['subject'], $num_pages_topic, false, $cur_search['last_post_id']).'">'.format_time($cur_search['last_post']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_search['last_poster']).'</span>';
 				
 #
-#---------[ 61. FIND ]---------------------------------------------------------
+#---------[ 67. FIND ]---------------------------------------------------------
 #
 
 <td class="tcr"><?php echo '<a href="viewtopic.php?pid='.$cur_search['last_post_id'].'#p'.$cur_search['last_post_id'].'">'.format_time($cur_search['last_post']).'</a> <span class="byuser">'.$lang_common['by'].' '.pun_htmlspecialchars($cur_search['last_poster']) ?></span></td>
 
 #
-#---------[ 62. REPLACE WITH ]---------------------------------------------------------
+#---------[ 68. REPLACE WITH ]---------------------------------------------------------
 #
 
 <td class="tcr"><?php echo $last_post ?></span></td>
 
 #
-#---------[ 63. OPEN ]---------------------------------------------------------
+#---------[ 69. OPEN ]---------------------------------------------------------
 #
 
 post.php
 
 #
-#---------[ 64. FIND ]---------------------------------------------
+#---------[ 70. FIND ]---------------------------------------------
 #
 
 redirect('viewtopic.php?pid='.$new_pid.'#p'.$new_pid, $lang_post['Post redirect']);
 
 #
-#---------[ 65. REPLACE BY ]-------------------------------------------------
+#---------[ 71. REPLACE BY ]-------------------------------------------------
 #
 
 $result = $db->query('SELECT subject, num_replies FROM '.$db->prefix.'topics WHERE id='.$new_tid) or error('Unable to get subject', __FILE__, __LINE__, $db->error());
@@ -623,84 +683,95 @@ $num_pages = ceil(($num_replies + 1) / $pun_user['disp_posts']);
 redirect(fluxrewrite("topic-", $new_tid, $subject, $num_pages, false, $new_pid), $lang_post['Post redirect']);
 
 #
-#---------[ 66. FIND ]---------------------------------------------
+#---------[ 72. FIND ]---------------------------------------------
 #
 
 <li><span>»&#160;</span><a href="viewforum.php?id=<?php echo $cur_posting['id'] ?>"><?php echo pun_htmlspecialchars($cur_posting['forum_name']) ?></a></li>
 <?php if (isset($cur_posting['subject'])): ?>			<li><span>»&#160;</span><a href="viewtopic.php?id=<?php echo $tid ?>"><?php echo pun_htmlspecialchars($cur_posting['subject']) ?>
 
 #
-#---------[ 67. REPLACE BY ]-------------------------------------------------
+#---------[ 73. REPLACE BY ]-------------------------------------------------
 #
 
 <li><span>»&#160;</span><a href="<?php echo fluxrewrite("forum-", $cur_posting['id'], $cur_posting['forum_name'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_posting['forum_name']) ?></a></li>
 <?php if (isset($cur_posting['subject'])): ?>			<li><span>»&#160;</span><a href="<?php echo fluxrewrite("topic-", $tid, $cur_posting['subject'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_posting['subject']) ?></a>
 
 #
-#---------[ 68. FIND ]---------------------------------------------
+#---------[ 74. FIND ]---------------------------------------------
 #
 
 $mail_message = str_replace('<post_url>', get_base_url().'/viewtopic.php?pid='.$new_pid.'#p'.$new_pid, $mail_message);
 
 #
-#---------[ 69. REPLACE BY (2 TIMES) ]-------------------------------------------------
+#---------[ 75. REPLACE BY ]-------------------------------------------------
 #
 
 $mail_message = str_replace('<post_url>', get_base_url().'/'.fluxrewrite("topic-", $tid, $cur_posting['subject'], 1, false, $new_pid), $mail_message);
 
 #
-#---------[ 70. FIND ]---------------------------------------------
+#---------[ 76. FIND ]---------------------------------------------
+#
+
+$mail_message = str_replace('<post_url>', get_base_url().'/viewtopic.php?pid='.$new_pid.'#p'.$new_pid, $mail_message);
+
+#
+#---------[ 77. REPLACE BY ]-------------------------------------------------
+#
+
+$mail_message = str_replace('<post_url>', get_base_url().'/'.fluxrewrite("topic-", $tid, $cur_posting['subject'], 1, false, $new_pid), $mail_message);
+
+#
+#---------[ 78. FIND ]---------------------------------------------
 #
 
 $mail_message_full = str_replace('<post_url>', get_base_url().'/viewtopic.php?pid='.$new_pid.'#p'.$new_pid, $mail_message_full);
 
 #
-#---------[ 71. REPLACE BY ]-------------------------------------------------
+#---------[ 79. REPLACE BY ]-------------------------------------------------
 #
 
 $mail_message_full = str_replace('<post_url>', get_base_url().'/'.fluxrewrite("topic-", $tid, $cur_posting['subject'], 1, false, $new_pid), $mail_message_full);
 
 #
-#---------[ 72. FIND ]---------------------------------------------
+#---------[ 80. FIND ]---------------------------------------------
 #
 
 $mail_message = str_replace('<topic_url>', get_base_url().'/viewtopic.php?id='.$new_tid, $mail_message);
 
 #
-#---------[ 73. REPLACE BY ]-------------------------------------------------
+#---------[ 81. REPLACE BY ]-------------------------------------------------
 #
 
 $mail_message = str_replace('<topic_url>', get_base_url().'/'.fluxrewrite("topic-", $new_tid, $pun_config['o_censoring'] == '1' ? $censored_subject : $subject, 1, false, false), $mail_message);
 
 
 #
-#---------[ 74. FIND ]---------------------------------------------
+#---------[ 82. FIND ]---------------------------------------------
 #
 
 $mail_message_full = str_replace('<topic_url>', get_base_url().'/viewtopic.php?id='.$new_tid, $mail_message_full);
 
 #
-#---------[ 75. REPLACE BY ]-------------------------------------------------
+#---------[ 83. REPLACE BY ]-------------------------------------------------
 #
 
 $mail_message_full = str_replace('<topic_url>', get_base_url().'/'.fluxrewrite("topic-", $new_tid, $pun_config['o_censoring'] == '1' ? $censored_subject : $subject, 1, false, false), $mail_message_full);
 
 
-
 #
-#---------[ 76. OPEN ]---------------------------------------------------------
+#---------[ 84. OPEN ]---------------------------------------------------------
 #
 
 edit.php
 
 #
-#---------[ 77. FIND ]---------------------------------------------
+#---------[ 85. FIND ]---------------------------------------------
 #
 
 redirect('viewtopic.php?pid='.$id.'#p'.$id, $lang_post['Edit redirect']);
 
 #
-#---------[ 78. REPLACE BY ]-------------------------------------------------
+#---------[ 86. REPLACE BY ]-------------------------------------------------
 #
 
 if (!$can_edit_subject)
@@ -716,45 +787,45 @@ $num_pages = ceil(($num_replies + 1) / $pun_user['disp_posts']);
 redirect(fluxrewrite("topic-", $cur_post['tid'], $subject, $num_pages, false, $id), $lang_post['Edit redirect']);
 
 #
-#---------[ 79. FIND ]---------------------------------------------
+#---------[ 87. FIND ]---------------------------------------------
 #
 
 <li><span>»&#160;</span><a href="viewforum.php?id=<?php echo $cur_post['fid'] ?>"><?php echo pun_htmlspecialchars($cur_post['forum_name']) ?></a></li>
 <li><span>»&#160;</span><a href="viewtopic.php?id=<?php echo $cur_post['tid'] ?>"><?php echo pun_htmlspecialchars($cur_post['subject']) ?></a></li>
 
 #
-#---------[ 80. REPLACE BY ]-------------------------------------------------
+#---------[ 88. REPLACE BY ]-------------------------------------------------
 #
 
 <li><span>»&#160;</span><a href="<?php echo fluxrewrite("forum-", $cur_post['fid'], $cur_post['forum_name'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_post['forum_name']) ?></a></li>
 <li><span>»&#160;</span><a href="<?php echo fluxrewrite("topic-", $cur_post['tid'], $cur_post['subject'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_post['subject']) ?></a></li>
 
 #
-#---------[ 81. OPEN ]---------------------------------------------------------
+#---------[ 89. OPEN ]---------------------------------------------------------
 #
 
 delete.php
 
 #
-#---------[ 82. FIND ]---------------------------------------------
+#---------[ 90. FIND ]---------------------------------------------
 #
 
 redirect('viewforum.php?id='.$cur_post['fid'], $lang_delete['Topic del redirect']);
 
 #
-#---------[ 83. REPLACE BY ]-------------------------------------------------
+#---------[ 91. REPLACE BY ]-------------------------------------------------
 #
 
 redirect(fluxrewrite("forum-", $cur_post['fid'], $cur_post['forum_name'], 1, false, false), $lang_delete['Topic del redirect']);
 
 #
-#---------[ 84. FIND ]---------------------------------------------
+#---------[ 92. FIND ]---------------------------------------------
 #
 
 redirect('viewtopic.php?pid='.$post_id.'#p'.$post_id, $lang_delete['Post del redirect']);
 
 #
-#---------[ 85. REPLACE BY ]----------------------------------------
+#---------[ 93. REPLACE BY ]----------------------------------------
 #
 
 $result2 = $db->query('SELECT COUNT(id) FROM '.$db->prefix.'posts WHERE id BETWEEN '.$cur_post['first_post_id'].' AND '.$post_id.' AND topic_id='.$cur_post['tid']) or error('Unable to get num_replies', __FILE__, __LINE__, $db->error());
@@ -764,14 +835,14 @@ $num_pages = ceil(($num_replies + 1) / $pun_user['disp_posts']);
 redirect(fluxrewrite("topic-", $cur_post['tid'], $cur_post['subject'], $num_pages, false, $post_id), $lang_delete['Post del redirect']);
 
 #
-#---------[ 86. FIND ]---------------------------------------------
+#---------[ 94. FIND ]---------------------------------------------
 #
 
 <li><span>»&#160;</span><a href="viewforum.php?id=<?php echo $cur_post['fid'] ?>"><?php echo pun_htmlspecialchars($cur_post['forum_name']) ?></a></li>
 <li><span>»&#160;</span><a href="viewtopic.php?pid=<?php echo $id ?>#p<?php echo $id ?>"><?php echo pun_htmlspecialchars($cur_post['subject']) ?></a></li>
 
 #
-#---------[ 87. REPLACE BY ]-------------------------------------------------
+#---------[ 95. REPLACE BY ]-------------------------------------------------
 #
 
 <li><span>»&#160;</span><a href="<?php echo fluxrewrite("forum-", $cur_post['fid'], $cur_post['forum_name'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_post['forum_name']) ?></a></li>
@@ -779,5 +850,5 @@ redirect(fluxrewrite("topic-", $cur_post['tid'], $cur_post['subject'], $num_page
 		
 			
 #
-#---------[ 88. Save your files and upload them; you're done! ]-----------------
+#---------[ 96. Save your files and upload them; you're done! ]-----------------
 #
