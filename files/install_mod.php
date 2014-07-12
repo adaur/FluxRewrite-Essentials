@@ -2,13 +2,13 @@
 /***********************************************************************/
 // Some info about your mod.
 $mod_title      = 'FluxRewrite Essentials';
-$mod_version    = '2.0.1';
-$release_date   = '2013-14-08';
+$mod_version    = '2.0.2';
+$release_date   = '2014-07-12';
 $author         = 'adaur';
 $author_email   = 'adaur.underground@gmail.com';
 
 // Versions of FluxBB this mod was created for. A warning will be displayed, if versions do not match
-$fluxbb_versions= array('1.5.1', '1.5.2', '1.5.3', '1.5.4');
+$fluxbb_versions= array('1.5.5', '1.5.6');
 
 // Set this to false if you haven't implemented the restore function (see below)
 $mod_restore	= true;
