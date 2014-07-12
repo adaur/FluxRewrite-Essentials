@@ -1,9 +1,9 @@
 ##
 ##       		   Title:  FluxRewrite Essentials
 ##
-##   		     Version:  2.0.1
-##  	 Works on FluxBB:  1.5.1, 1.5.2, 1.5.3, 1.5.4
-##    				Date:  2013-08-14
+##   		     Version:  2.0.2
+##  	 Works on FluxBB:  1.5.5, 1.5.6
+##    				Date:  2014-07-12
 ##               Authors: adaur (adaur.underground@gmail.com)
 ##                        Kévin Dunglas (PunRewrite)
 ##
@@ -87,9 +87,12 @@ include/functions.php
 //
 // Make sure that HTTP_REFERER matches base_url/script
 //
-function confirm_referrer($script, $error_msg = false)
+function confirm_referrer($scripts, $error_msg = false)
 {
 	global $pun_config, $lang_common;
+
+	if (!is_array($scripts))
+		$scripts = array($scripts);
 
 	// There is no referrer
 	if (empty($_SERVER['HTTP_REFERER']))
@@ -100,13 +103,20 @@ function confirm_referrer($script, $error_msg = false)
 	if (strpos($referrer['host'], 'www.') === 0)
 		$referrer['host'] = substr($referrer['host'], 4);
 
-	$valid = parse_url(strtolower(get_base_url().'/'.$script));
-	// Remove www subdomain if it exists
-	if (strpos($valid['host'], 'www.') === 0)
-		$valid['host'] = substr($valid['host'], 4);
+	$valid_paths = array();
+	foreach ($scripts as $script)
+	{
+		$valid = parse_url(strtolower(get_base_url().'/'.$script));
+		// Remove www subdomain if it exists
+		if (strpos($valid['host'], 'www.') === 0)
+			$valid['host'] = substr($valid['host'], 4);
+
+		$valid_host = $valid['host'];
+		$valid_paths[] = $valid['path'];
+	}
 
 	// Check the host and path match. Ignore the scheme, port, etc.
-	if ($referrer['host'] != $valid['host'] || $referrer['path'] != $valid['path'])
+	if ($referrer['host'] != $valid_host || !in_array($referrer['path'], $valid_paths))
 		message($error_msg ? $error_msg : $lang_common['Bad referrer']);
 }
 
@@ -117,10 +127,13 @@ function confirm_referrer($script, $error_msg = false)
 //
 // Make sure that HTTP_REFERER matches base_url/script
 //
-function confirm_referrer($script, $error_msg = false)
+function confirm_referrer($scripts, $error_msg = false)
 {
 	global $pun_config, $lang_common;
-	static $rewrites = array('viewtopic.php' => 'topic-', 'viewforum.php' => 'forum-', 'post.php' => 'message-');
+	static $rewrites = array('viewtopic.php' => 'topic-', 'viewforum.php' => 'forum-', 'post.php' => 'topic-');
+
+	if (!is_array($scripts))
+		$scripts = array($scripts);
 
 	// There is no referrer
 	if (empty($_SERVER['HTTP_REFERER']))
@@ -131,21 +144,31 @@ function confirm_referrer($script, $error_msg = false)
 	if (strpos($referrer['host'], 'www.') === 0)
 		$referrer['host'] = substr($referrer['host'], 4);
 
-	$valid = parse_url(strtolower(get_base_url().'/'.$script));
-	// Remove www subdomain if it exists
-	if (strpos($valid['host'], 'www.') === 0)
-		$valid['host'] = substr($valid['host'], 4);
-
-	// Check the host and path match. Ignore the scheme, port, etc.
-	if ($referrer['host'] != $valid['host'] || $referrer['path'] != $valid['path'])
+	$valid_paths = array();
+	foreach ($scripts as $script)
 	{
-		if (array_key_exists($script, $rewrites))
+		$valid = parse_url(strtolower(get_base_url().'/'.$script));
+		// Remove www subdomain if it exists
+		if (strpos($valid['host'], 'www.') === 0)
+			$valid['host'] = substr($valid['host'], 4);
+
+		$valid_host = $valid['host'];
+		$valid_paths[] = $valid['path'];
+	}
+	
+	// Check the host and path match. Ignore the scheme, port, etc.
+	if ($referrer['host'] != $valid['host'] || !in_array($referrer['path'], $valid_paths))
+	{
+		foreach ($scripts as $script)
 		{
-            if (!preg_match('#^'.get_base_url().'/'.$rewrites[$script].'[0-9]+-[0-9|a-b|\-|\.]*(.?)#i', strtolower($_SERVER['HTTP_REFERER'])))
-                message($lang_common['Bad referrer']);                    
-        }
-		else
-            message($lang_common['Bad referrer']);   
+			if (array_key_exists($script, $rewrites))
+			{
+				if (!preg_match('#^'.get_base_url().'/'.$rewrites[$script].'[0-9]+-[0-9|a-b|\-|\.]*(.?)#i', strtolower($_SERVER['HTTP_REFERER'])))
+					message($error_msg ? $error_msg : $lang_common['Bad referrer']);
+			}
+			else
+				message($error_msg ? $error_msg : $lang_common['Bad referrer']);
+		}
 	}
 }
 
@@ -686,15 +709,19 @@ redirect(fluxrewrite("topic-", $new_tid, $subject, $num_pages, false, $new_pid),
 #---------[ 72. FIND ]---------------------------------------------
 #
 
-<li><span>»&#160;</span><a href="viewforum.php?id=<?php echo $cur_posting['id'] ?>"><?php echo pun_htmlspecialchars($cur_posting['forum_name']) ?></a></li>
-<?php if (isset($cur_posting['subject'])): ?>			<li><span>»&#160;</span><a href="viewtopic.php?id=<?php echo $tid ?>"><?php echo pun_htmlspecialchars($cur_posting['subject']) ?>
+			<li><span>»&#160;</span><a href="viewforum.php?id=<?php echo $cur_posting['id'] ?>"><?php echo pun_htmlspecialchars($cur_posting['forum_name']) ?></a></li>
+<?php if (isset($_POST['req_subject'])): ?>			<li><span>»&#160;</span><?php echo pun_htmlspecialchars($_POST['req_subject']) ?></li>
+<?php endif; ?>
+<?php if (isset($cur_posting['subject'])): ?>			<li><span>»&#160;</span><a href="viewtopic.php?id=<?php echo $tid ?>"><?php echo pun_htmlspecialchars($cur_posting['subject']) ?></a></li>
 
 #
 #---------[ 73. REPLACE BY ]-------------------------------------------------
 #
 
-<li><span>»&#160;</span><a href="<?php echo fluxrewrite("forum-", $cur_posting['id'], $cur_posting['forum_name'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_posting['forum_name']) ?></a></li>
-<?php if (isset($cur_posting['subject'])): ?>			<li><span>»&#160;</span><a href="<?php echo fluxrewrite("topic-", $tid, $cur_posting['subject'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_posting['subject']) ?></a>
+			<li><span>»&#160;</span><a href="<?php echo fluxrewrite("forum-", $cur_posting['id'], $cur_posting['forum_name'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_posting['forum_name']) ?></a></li>
+<?php if (isset($_POST['req_subject'])): ?>			<li><span>»&#160;</span><?php echo pun_htmlspecialchars($_POST['req_subject']) ?></li>
+<?php endif; ?>
+<?php if (isset($cur_posting['subject'])): ?>			<li><span>»&#160;</span><a href="<?php echo fluxrewrite("topic-", $tid, $cur_posting['subject'], 1, false, false) ?>"><?php echo pun_htmlspecialchars($cur_posting['subject']) ?></a></li>
 
 #
 #---------[ 74. FIND ]---------------------------------------------
